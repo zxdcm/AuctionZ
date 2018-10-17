@@ -6,8 +6,8 @@ namespace ApplicationCore.Interfaces
 {
     public interface IBidRepository : IRepository<Bid>
     {
-        Bid GetLastBidForLot(Lot lot);
-        IEnumerable<Bid> GetAllBidsForLot(Func<Lot, bool> predicate);
-        IEnumerable<Bid> GetAllBidsForUser(Func<Lot, bool> predicate);
+        Bid GetLastBidForLot(int lotId);
+        IEnumerable<Bid> GetAllBidsForLot(int lotId);
+        IEnumerable<Bid> GetAllBidsForUser(int userId);
     }
 }

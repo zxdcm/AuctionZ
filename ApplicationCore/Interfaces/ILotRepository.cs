@@ -6,8 +6,11 @@ namespace ApplicationCore.Interfaces
 {
     public interface ILotRepository : IRepository<Lot>
     {
+
         Lot GetByIdWithBids(int id);
+
         IEnumerable<Lot> GetAllWithBids();
-        IEnumerable<Lot> GetAllByCategory(Func<Category, bool> predicate);
+        IEnumerable<Lot> FindWithBids(Func<Lot, bool> predicate);
+
     }
 }
