@@ -22,10 +22,11 @@ namespace Infrastructure.Data
                 .FirstOrDefault();
         }
 
-        public IEnumerable<Bid> GetAllBidsForLot(int lotId)
+        public IEnumerable<Bid> GetAllBidsForLotWithUsers(int lotId)
         {
             return _context.Bids
-                .Where(x => x.LotId == lotId);
+                .Where(x => x.LotId == lotId)
+                .Include(x => x.User);
         }
 
         public IEnumerable<Bid> GetAllBidsForUser(int userId)

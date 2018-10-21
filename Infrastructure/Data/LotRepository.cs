@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    class LotRepository : EfRepository<Lot>, ILotRepository
+    public class LotRepository : EfRepository<Lot>, ILotRepository
     {
 
         public LotRepository(AuctionContext context) : base(context)
