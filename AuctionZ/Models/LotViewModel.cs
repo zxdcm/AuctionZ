@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using ApplicationCore.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AuctionZ.Models
 {
@@ -35,10 +38,9 @@ namespace AuctionZ.Models
         public string Description { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
 
         public IEnumerable<Bid> Bids { get; set; }
-
+        public IEnumerable<SelectListItem> Categories { get; set; }
 
     }
 }
