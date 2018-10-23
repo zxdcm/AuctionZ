@@ -31,6 +31,7 @@ namespace AuctionZ.Models
         [Display(Name = "Category")]
         [Required(ErrorMessage = "The category is required!")]
         public string CategoryId { get; set; }
+        
         public string Description { get; set; }
 
         public int UserId { get; set; }
