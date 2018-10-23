@@ -50,9 +50,11 @@ namespace AuctionZ
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<ILotRepository, LotRepository>();
             services.AddScoped<IBidRepository, BidRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             services.AddScoped<ILotsService, LotsService>();
             services.AddScoped<IBidsService, BidsService>();
+
 
             services.AddAutoMapper();
 
@@ -86,7 +88,7 @@ namespace AuctionZ
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Auction}/{action=Index}/{id?}");
+                    template: "{controller=Auction}/{action=Index}/{id?}/");
             });
         }
     }
