@@ -1,0 +1,18 @@
+﻿@model AuctionZ.Models.LotViewModel
+
+
+<h3>@Model.Name</h3>
+<p>Current price: <span class="">@Model.Price</span></p>
+<p>
+    @if (DateTime.Now > Model.ExpirationTime)
+    {
+        <span class="label label-danger">@Model.ExpirationTime, Time is over</span>
+    }
+    else
+    {
+        <span class="label label-success">@Model.ExpirationTime</span>
+    }                    
+</p>
+<p>
+    <a class="btn btn-info" asp-action="Details" asp-route-lotId="@Model.LotId"></a>
+</p>
