@@ -39,7 +39,7 @@ namespace AuctionZ.Models
 
         public int UserId { get; set; }
 
-        public IEnumerable<Bid> Bids { get; set; }
+        public IEnumerable<BidViewModel> Bids { get; set; }
         public IEnumerable<SelectListItem> Categories { get; set; }
 
     }
