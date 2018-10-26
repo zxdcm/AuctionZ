@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
 using AuctionZ.Models;
@@ -16,6 +17,7 @@ namespace AuctionZ.Controllers
     {
         private readonly ILotsService _lotService;
         private readonly IBidsService _bidService;
+        private readonly IUserServices _userServices;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
@@ -47,6 +49,7 @@ namespace AuctionZ.Controllers
         [HttpPost]
         public IActionResult MakeBid(int lotId, decimal bidValue)
         {
+            
             var lot = _lotService.GetItem(lotId);
             if (lot.Price < bidValue)
             {
@@ -56,23 +59,32 @@ namespace AuctionZ.Controllers
 
             if (ModelState.IsValid)
             {
-                _bidService.AddItem(new Bid()
+                using (TransactionScope transaction = new TransactionScope())
                 {
-                    DateOfBid = DateTime.Now,
-                    LotId = lot.LotId,
-                    Price = bidValue,
-                    UserId = 2
-                });
-                lot.Price = bidValue;
-                _lotService.Update(lot);
+
+                    var last_bid = _bidService.GetLastBidForLot(lotId);
+
+                    if (last_bid != null)
+                        _userServices.DepositMoneyToUser(last_bid.Price, last_bid.UserId);
+
+                    var bidder_id = 2; //todo fix
+                    _userServices.WithDrawMoneyFromUser(bidValue, bidder_id);
+
+                    _bidService.AddItem(new Bid()
+                    {
+                        DateOfBid = DateTime.Now,
+                        LotId = lot.LotId,
+                        Price = bidValue,
+                        UserId = 2
+                    });
+
+                    lot.Price = bidValue;
+                    _lotService.Update(lot);
+
+                    transaction.Complete();
+                }
             }
             return RedirectToAction(nameof(Details), lot.LotId);
-        }
-
-        [HttpPost]
-        public IActionResult AddLot()
-        {
-            return View();
         }
 
         [HttpGet]
