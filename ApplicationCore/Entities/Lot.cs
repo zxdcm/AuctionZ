@@ -8,7 +8,9 @@ namespace ApplicationCore.Entities
         public int LotId { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
-        public byte[] Image { get; set; }
+        
+        public string ImageUrl { get; set; }
+
         public DateTime ExpirationTime { get; set; }
         public string Description { get; set; }
 
