@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +37,7 @@ namespace Infrastructure.Data
             return _context.Set<T>().Find(id);
         }
 
-        public IEnumerable<T> Find(Func<T, bool> predicate)
+        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
         {
             return _context.Set<T>().Where(predicate);
         }

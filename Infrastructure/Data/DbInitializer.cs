@@ -13,12 +13,12 @@ namespace Infrastructure.Data
         {
 //            context.Database.EnsureDeleted();
 //            context.Database.EnsureCreated();
-            var (u, c, l, b) = GetPreconfiguredData();
-            context.Users.AddRange(u);
-            context.Categories.AddRange(c);
-            context.Lots.AddRange(l);
-            context.Bids.AddRange(b);
-            context.SaveChanges();
+//            var (u, c, l, b) = GetPreconfiguredData();
+//            context.Users.AddRange(u);
+//            context.Categories.AddRange(c);
+//            context.Lots.AddRange(l);
+//            context.Bids.AddRange(b);
+//            context.SaveChanges();
         }
 
 
@@ -33,7 +33,7 @@ namespace Infrastructure.Data
                 Category = categories[0],
                 Description = "Test",
                 ExpirationTime = DateTime.Today.AddDays(10),
-                Image = null,
+                ImageUrl = null,
                 Name = "Test",
                 Price = (Decimal)100000.00001101,
                 User = users[0]},

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
@@ -16,7 +17,12 @@ namespace Infrastructure.Data
 
         }
 
- 
+
+        public IEnumerable<Lot> GetAllLotsForUser(int userId)
+        {
+            return _context.Lots.Where(x => x.UserId == userId);
+        }
+
         public Lot GetByIdWithBids(int id)
         {
             return _context.Lots
@@ -31,7 +37,7 @@ namespace Infrastructure.Data
         }
 
 
-        public IEnumerable<Lot> FindWithBids(Func<Lot, bool> predicate)
+        public IEnumerable<Lot> FindWithBids(Expression<Func<Lot, bool>> predicate)
         {
             return _context.Lots.Include(b => b.Bids).Where(predicate); // Todo: somehow swap Include and Where 
         }

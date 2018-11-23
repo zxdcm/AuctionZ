@@ -33,6 +33,5 @@ namespace Infrastructure.Data
         {
             return _context.Bids.Where(x => x.UserId == userId);
         }
-
     }
 }
