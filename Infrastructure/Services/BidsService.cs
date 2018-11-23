@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using ApplicationCore.DTO;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
+using Infrastructure.Mappers;
 
 namespace Infrastructure.Services
 {
@@ -12,27 +16,28 @@ namespace Infrastructure.Services
         public BidsService(IBidRepository bidRepository)
         {
             this._bidRepository = bidRepository;
+
         }
 
 
-        public Bid GetItem(int id)
+        public BidDto GetItem(int id)
         {
-            return _bidRepository.GetById(id);
+            return _bidRepository.GetById(id)?.ToDto();
         }
 
-        public IEnumerable<Bid> GetItems()
+        public IEnumerable<BidDto> GetItems()
         {
-            return _bidRepository.ListAll();
+            return _bidRepository.ListAll().Select(x => x.ToDto());
         }
 
-        public Bid AddItem(Bid bid)
+        public BidDto AddItem(BidDto bid)
         {
-            return _bidRepository.Create(bid);
+            return _bidRepository.Create(bid.ToDal()).ToDto();
         }
 
-        public void Update(Bid bid)
+        public void Update(BidDto bid)
         {
-            _bidRepository.Update(bid);
+            _bidRepository.Update(bid.ToDal());
         }
 
         public void RemoveItem(int id)
@@ -41,24 +46,25 @@ namespace Infrastructure.Services
             _bidRepository.Delete(bid);
         }
 
-        public IEnumerable<Bid> Find(Func<Bid, bool> predicate)
+        public IEnumerable<BidDto> Find(Expression<Func<BidDto, bool>> predicate)
         {
-            return _bidRepository.Find(predicate);
+            throw new NotImplementedException();
+            //return _bidRepository.Find(predicate);
         }
 
-        public IEnumerable<Bid> GetAllBidsForLotWithUsers(int lodId)
+        public IEnumerable<BidDto> GetAllBidsForLotWithUsers(int lodId)
         {
-            return _bidRepository.GetAllBidsForLotWithUsers(lodId);
+            return _bidRepository.GetAllBidsForLotWithUsers(lodId).Select(x => x.ToDto());
         }
 
-        public IEnumerable<Bid> GetAllBidsForUser(int userId)
+        public IEnumerable<BidDto> GetAllBidsForUser(int userId)
         {
-            return _bidRepository.GetAllBidsForUser(userId);
+            return _bidRepository.GetAllBidsForUser(userId).Select(x => x.ToDto());
         }
 
-        public Bid GetLastBidForLot(int lotId)
+        public BidDto GetLastBidForLot(int lotId)
         {
-            return _bidRepository.GetLastBidForLot(lotId);
+            return _bidRepository.GetLastBidForLot(lotId).ToDto();
         }
 
     }

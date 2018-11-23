@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Transactions;
+using ApplicationCore.DTO;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
+using Infrastructure.Mappers;
 
 namespace Infrastructure.Services
 {
@@ -15,29 +20,30 @@ namespace Infrastructure.Services
             this._lotRepository = lotRepository;
         }
 
-        public Lot GetItem(int id)
+        public LotDto GetItem(int id)
         {
-            return _lotRepository.GetById(id);
+            return _lotRepository.GetById(id)?.ToDto();
         }
 
-        public IEnumerable<Lot> GetItems()
+        public IEnumerable<LotDto> GetItems()
         {
-            return _lotRepository.ListAll();
+            return _lotRepository.ListAll().Select(x => x.ToDto());
         }
 
-        public IEnumerable<Lot> Find(Func<Lot, bool> predicate)
+        public IEnumerable<LotDto> Find(Expression<Func<LotDto, bool>> predicate)
         {
-            return _lotRepository.Find(predicate);
+            throw new NotImplementedException();
+            // return _lotRepository.Find(predicate);
         }
 
-        public Lot AddItem(Lot lot)
+        public LotDto AddItem(LotDto lot)
         {
-            return _lotRepository.Create(lot);
+            return _lotRepository.Create(lot.ToDal()).ToDto();
         }
 
-        public void Update(Lot lot)
+        public void Update(LotDto lot)
         {
-            _lotRepository.Update(lot);
+            _lotRepository.Update(lot.ToDal());
         }
 
         public void RemoveItem(int id)
@@ -46,22 +52,28 @@ namespace Infrastructure.Services
             _lotRepository.Delete(lot);
         }
 
-        public Lot GetByIdWithBids(int id)
+        public LotDto GetByIdWithBids(int id)
         {
-            return _lotRepository.GetByIdWithBids(id);
+            return _lotRepository.GetByIdWithBids(id).ToDto();
         }
 
-        public IEnumerable<Lot> GetAllWithBids()
+        public IEnumerable<LotDto> GetAllWithBids()
         {
-            return _lotRepository.GetAllWithBids();
+            return _lotRepository.GetAllWithBids().Select(x => x.ToDto());
         }
 
-        public IEnumerable<Lot> FindWidthBids(Func<Lot, bool> predicate)
+        public IEnumerable<LotDto> FindWidthBids(Expression<Func<LotDto, bool>> predicate)
         {
-            return _lotRepository.FindWithBids(predicate);
+            throw new NotImplementedException();;
+            //return _lotRepository.FindWithBids(predicate);
         }
 
+        public IEnumerable<LotDto> GetAllLotsForUser(int lotId)
+        {
+            return _lotRepository.GetAllLotsForUser(lotId).Select(x => x.ToDto());
         }
+
+    }
       
    
 }
