@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.DTO;
 using AutoMapper;
 
 namespace AuctionZ.Models.MappingProfiles
@@ -7,9 +7,10 @@ namespace AuctionZ.Models.MappingProfiles
     {
         public LotMappingProfile()
         {
-            CreateMap<Lot, LotViewModel>()
-                .ForMember(x => x.Categories, opt => opt.Ignore());
-            CreateMap<LotViewModel, Lot>();
+            CreateMap<LotDto, LotViewModel>()
+                .ForMember(x => x.Categories, opt => opt.Ignore())
+                .ForMember(x => x.ImageFile, opt => opt.Ignore());
+            CreateMap<LotViewModel, LotDto>();
         }
     }
 }

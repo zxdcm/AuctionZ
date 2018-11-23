@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.DTO;
 using AutoMapper;
 
 namespace AuctionZ.Models.MappingProfiles
@@ -7,8 +7,8 @@ namespace AuctionZ.Models.MappingProfiles
     {
         public BidMappingProfile()
         {
-            CreateMap<Bid, BidViewModel>();
-            CreateMap<BidViewModel, Bid>();
+            CreateMap<BidDto, BidViewModel>();
+            CreateMap<BidViewModel, BidDto>();
         }
     }
 }
