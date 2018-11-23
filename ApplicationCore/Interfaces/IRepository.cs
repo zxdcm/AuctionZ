@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace ApplicationCore.Interfaces
 {
@@ -7,7 +8,7 @@ namespace ApplicationCore.Interfaces
     {
          T GetById(int id);
          IEnumerable<T> ListAll();
-         IEnumerable<T> Find(Func<T, bool> predicate);
+         IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
          T Create(T entity);
          void Update(T entity);
          void Delete(T entity);

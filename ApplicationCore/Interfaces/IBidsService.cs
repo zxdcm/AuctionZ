@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using ApplicationCore.Entities;
+using System.Linq.Expressions;
+using ApplicationCore.DTO;
+
 
 namespace ApplicationCore.Interfaces
 {
-    public interface IBidsService : IManagementService<Bid>
+    public interface IBidsService : IManagementService<BidDto>
     {
-        IEnumerable<Bid> Find(Func<Bid, bool> predicate);
-        IEnumerable<Bid> GetAllBidsForLotWithUsers(int lotId);
-        IEnumerable<Bid> GetAllBidsForUser(int userId);
-        Bid GetLastBidForLot(int lotId);
+        IEnumerable<BidDto> Find(Expression<Func<BidDto, bool>> predicate);
+        IEnumerable<BidDto> GetAllBidsForLotWithUsers(int lotId);
+        IEnumerable<BidDto> GetAllBidsForUser(int userId);
+        BidDto GetLastBidForLot(int lotId);
     }
 }

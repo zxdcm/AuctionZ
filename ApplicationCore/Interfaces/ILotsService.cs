@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using ApplicationCore.Entities;
+using System.Linq.Expressions;
+using ApplicationCore.DTO;
 
 namespace ApplicationCore.Interfaces
 {
-    public interface ILotsService : IManagementService<Lot>
+    public interface ILotsService : IManagementService<LotDto>
     {
-        IEnumerable<Lot> Find(Func<Lot, bool> predicate);
-        IEnumerable<Lot> FindWidthBids(Func<Lot, bool> predicate);
-        IEnumerable<Lot> GetAllWithBids();
-        Lot GetByIdWithBids(int id);
+        IEnumerable<LotDto> Find(Expression<Func<LotDto, bool>> predicate);
+        IEnumerable<LotDto> FindWidthBids(Expression<Func<LotDto, bool>> predicate);
+        IEnumerable<LotDto> GetAllWithBids();
+        IEnumerable<LotDto> GetAllLotsForUser(int userId);
+        LotDto GetByIdWithBids(int id);
     }
 }
