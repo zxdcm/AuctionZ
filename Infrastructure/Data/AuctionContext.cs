@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ApplicationCore.Entities;
+﻿using ApplicationCore.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -30,6 +27,9 @@ namespace Infrastructure.Data
 
         private void ConfigureBids(EntityTypeBuilder<Bid> builder)
         {
+            builder
+                .Property(x => x.Price)
+                .HasColumnType("decimal(18,2)");
         }
 
         private void ConfigureLot(EntityTypeBuilder<Lot> builder)
@@ -38,6 +38,9 @@ namespace Infrastructure.Data
                 .HasOne(x => x.Category)
                 .WithMany(x => x.Lots)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder
+                .Property(x => x.Price)
+                .HasColumnType("decimal(18,2)");
         }
 
         private void ConfigureUser(EntityTypeBuilder<User> builder)
@@ -46,6 +49,9 @@ namespace Infrastructure.Data
                 .HasMany(x => x.Bids)
                 .WithOne(x => x.User)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder
+                .Property(x => x.Money)
+                .HasColumnType("decimal(18,2)");
 
         }
 
