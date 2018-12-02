@@ -6,6 +6,8 @@ namespace Infrastructure.Mappers
 {
     public class BidDtoMappingProfile : Profile
     {
-        public BidDtoMappingProfile() => CreateMap<Bid, BidDto>().ReverseMap();
+        public BidDtoMappingProfile() => CreateMap<Bid, BidDto>()
+            .ReverseMap()
+            .PreserveReferences();
     }
 }

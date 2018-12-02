@@ -8,7 +8,7 @@ namespace Infrastructure.Mappers
     {
         public LotDtoMappingProfile()
         {
-            CreateMap<Lot, LotDto>();
+            CreateMap<Lot, LotDto>().ReverseMap();
         }
     }
 }

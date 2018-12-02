@@ -9,6 +9,7 @@ namespace Infrastructure.Mappers
 {
     class UserDtoMappingProfile : Profile
     {
-        public UserDtoMappingProfile() => CreateMap<User, UserDto>().ReverseMap();
+        public UserDtoMappingProfile() => CreateMap<User, UserDto>()
+            .ReverseMap();
     }
 }

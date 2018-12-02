@@ -8,7 +8,9 @@ namespace Infrastructure.Mappers
     {
         public CategoryDtoMappingProfile()
         {
-            CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<Category, CategoryDto>()
+                .ReverseMap()
+                .PreserveReferences();
         }
     }
 }
