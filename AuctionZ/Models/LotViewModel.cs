@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ApplicationCore.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -24,7 +25,6 @@ namespace AuctionZ.Models
         [Range(typeof(decimal), "0", "10000", ErrorMessage = "Invalid price")]
         [Required(ErrorMessage = "The field must be filled")]
         public decimal Price { get; set; }
-        public byte[] Image { get; set; }
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Expiration time")]
@@ -36,11 +36,16 @@ namespace AuctionZ.Models
         public string CategoryId { get; set; }
         
         public string Description { get; set; }
-
         public int UserId { get; set; }
 
+        [Display(Name ="Image")]
+        public string ImageUrl { get; set; }
+
+        //Optional
         public IEnumerable<BidViewModel> Bids { get; set; }
         public IEnumerable<SelectListItem> Categories { get; set; }
+        [Display(Name = "Image")]
+        public IFormFile ImageFile { get; set; }
 
     }
 }
