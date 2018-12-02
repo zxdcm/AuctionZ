@@ -1,0 +1,26 @@
+﻿@model AuctionZ.Models.Account.LoginViewModel
+
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <h4>Log In</h4>
+            <hr/>
+            <div class="text-danger" asp-validation-summary="All"></div>
+            <form asp-action="Login" method="post">
+                <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <button class="btn btn-primary" type="submit">Log In</button>
+            </form>
+        </section>
+    </div>
+</div>
