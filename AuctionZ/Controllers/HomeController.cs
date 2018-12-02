@@ -10,6 +10,8 @@ namespace AuctionZ.Controllers
 {
     public class HomeController : Controller
     {
+
+
         public IActionResult Index()
         {
             return View();
@@ -17,24 +19,14 @@ namespace AuctionZ.Controllers
 
         public IActionResult About()
         {
-
             ViewData["Message"] = "Your application description page.";
             return View();
         }
 
-        private void delegte(object sender, ConsoleCancelEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
-            int z = 10;
-            if (z == Null)
-            {
-
-            }
             return View();
         }
 
