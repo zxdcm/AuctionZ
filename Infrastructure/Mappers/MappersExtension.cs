@@ -8,167 +8,51 @@ namespace Infrastructure.Mappers
 {
     public static class MappingExtension
     {
-//
-//        public static BidDto ToDto(this Bid bid) =>
-//            ToDtoWithCache(bid, new Dictionary<object, object>());
-//
-//        static BidDto ToDtoWithCache(Bid bid, Dictionary<object, object> cache)
-//        {
-//            if (cache.TryGetValue(bid, out var result))
-//                return (BidDto)result;
-//
-//            var dto = new BidDto();
-//            cache[bid] = dto;
-//
-//            dto.User = ToDtoWithCache(bid.User, cache);
-//
-//            return dto;
-//        }
-//
-//        public static UserDto ToDto(this User user) =>
-//            ToDtoWithCache(user, new Dictionary<object, object>());
-//
-//        static UserDto ToDtoWithCache(User user, Dictionary<object, object> cache)
-//        {
-//            if (cache.TryGetValue(user, out var result))
-//                return (UserDto)result;
-//
-//            var dto = new UserDto();
-//            cache[user] = dto;
-//
-//            dto.Bids = user.Bids?.Select(x => ToDtoWithCache(x, cache)).ToList();
-//
-//            return dto;
-//        }
-
-
+      
 
         #region LotMappers
-        public static Lot ToDal(this LotDto lot)
-        {
-//            return new Lot()
-//            {
-//                LotId = lot.LotId,
-//                Name = lot.Name,
-//                Description = lot.Description,
-//                Price = lot.Price,
-//                ExpirationTime = lot.ExpirationTime,
-//                CategoryId = lot.CategoryId,
-//                Category = lot.Category?.ToDal(),
-//                Bids = lot.Bids?.Select(x => x.ToDal()).ToList(),
-//                UserId = lot.UserId
-//            };
-            return Mapper.Map<Lot>(lot);
-        }
+        public static Lot ToDal(this LotDto dto) => Mapper.Map<Lot>(dto);
+        public static LotDto ToDto(this Lot entity) => Mapper.Map<LotDto>(entity);
 
-        public static LotDto ToDto(this Lot lot)
-        {
-//            return new LotDto()
-//            {
-//                LotId = lot.LotId,
-//                Name = lot.Name,
-//                Description = lot.Description,
-//                Price = lot.Price,
-//                ExpirationTime = lot.ExpirationTime,
-//                CategoryId = lot.CategoryId,
-//                Category = lot.Category?.ToDto(),
-//                Bids = lot.Bids?.Select(x => x.ToDto()).ToList(),
-//                UserId = lot.UserId
-//            };
-            return Mapper.Map<LotDto>(lot);
-        }
+        public static IEnumerable<Lot> ToDal(this IEnumerable<LotDto> dto) 
+            => Mapper.Map<IEnumerable<Lot>>(dto);
+        public static IEnumerable<LotDto> ToDto(this IEnumerable<Lot> entity) 
+            => Mapper.Map<IEnumerable<LotDto>>(entity);
+
 
         #endregion
 
         #region BidMappers
 
-        public static Bid ToDal(this BidDto bid)
-        {
-//            return new Bid()
-//            {
-//                BidId = bid.BidId,
-//                LotId = bid.LotId,
-//                UserId = bid.UserId,
-//                User = bid.User?.ToDal(),
-//                DateOfBid = bid.DateOfBid,
-//                Price = bid.Price,
-//                Lot = bid.Lot?.ToDal(),
-//            };
-             return Mapper.Map<Bid>(bid);
-        }
+        public static Bid ToDal(this BidDto dto) => Mapper.Map<Bid>(dto);
+        public static BidDto ToDto(this Bid entity) => Mapper.Map<BidDto>(entity);
 
-        public static BidDto ToDto(this Bid bid)
-        {
-//            return new BidDto()
-//            {
-//                BidId = bid.BidId,
-//                LotId = bid.LotId,
-//                UserId = bid.UserId,
-//                User = bid.User?.ToDto(),
-//                DateOfBid = bid.DateOfBid,
-//                Price = bid.Price,
-//                Lot = bid.Lot?.ToDto(),
-//            };
-            return Mapper.Map<BidDto>(bid);
-        }
+        public static IEnumerable<Bid> ToDal(this IEnumerable<BidDto> dto) 
+            => Mapper.Map<IEnumerable<Bid>>(dto);
+        public static IEnumerable<BidDto> ToDto(this IEnumerable<Bid> entity) => 
+            Mapper.Map<IEnumerable<BidDto>>(entity);
+
+
         #endregion
 
         #region UserMappers
 
-        public static User ToDal(this UserDto user)
-        {
-//            return new User()
-//            {
-//                UserId = user.UserId,
-//                Money = user.Money,
-//                Name = user.Name,
-//                Bids = user.Bids?.Select(x => x.ToDal()).ToList(),
-//                Lots = user.Lots?.Select(x => x.ToDal()).ToList(),
-//            };
-            return Mapper.Map<User>(user);
-        }
+        public static User ToDal(this UserDto dto) => Mapper.Map<User>(dto);
+        public static UserDto ToDto(this User entity) => Mapper.Map<UserDto>(entity);
 
-        public static UserDto ToDto(this User user)
-        {
-            //            return new UserDto()
-            //            {
-            //                UserId = user.UserId,
-            //                Money = user.Money,
-            //                Name = user.Name,
-            //                Bids = user.Bids?.Select(x => x.ToDto()).ToList(),
-            //                Lots = user.Lots?.Select(x => x.ToDto()).ToList(),
-            //            };
-            return Mapper.Map<UserDto>(user);
-        }
+        public static IEnumerable<User> ToDal(this IEnumerable<UserDto> dto) => 
+            Mapper.Map<IEnumerable<User>>(dto);
+        public static IEnumerable<UserDto> ToDto(this IEnumerable<User> entity) => 
+            Mapper.Map<IEnumerable<UserDto>>(entity);
 
         #endregion
 
         #region CategoryMappers
 
 
-        public static Category ToDal(this CategoryDto category)
-        {
-//            return new Category()
-//            {
-//                CategoryId = category.CategoryId,
-//                Name = category.Name,
-//                Lots = category.Lots?.Select(x => x.ToDal()).ToList()
-//            };
-            return Mapper.Map<Category>(category);
-        }
+        public static Category ToDal(this CategoryDto category) => Mapper.Map<Category>(category);
 
-        public static CategoryDto ToDto(this Category category)
-        {
-//            return new CategoryDto()
-//            {
-//                CategoryId = category.CategoryId,
-//                Name = category.Name,
-//                Lots = category.Lots?.Select(x => x.ToDto()).ToList()
-//            };
-            return Mapper.Map<CategoryDto>(category);
-        }
-
-
+        public static CategoryDto ToDto(this Category category) => Mapper.Map<CategoryDto>(category);
 
         #endregion
 
