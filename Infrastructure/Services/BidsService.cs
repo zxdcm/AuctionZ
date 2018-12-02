@@ -27,7 +27,7 @@ namespace Infrastructure.Services
 
         public IEnumerable<BidDto> GetItems()
         {
-            return _bidRepository.ListAll().Select(x => x.ToDto());
+            return _bidRepository.ListAll().ToDto();
         }
 
         public BidDto AddItem(BidDto bid)
@@ -54,12 +54,12 @@ namespace Infrastructure.Services
 
         public IEnumerable<BidDto> GetAllBidsForLotWithUsers(int lodId)
         {
-            return _bidRepository.GetAllBidsForLotWithUsers(lodId).Select(x => x.ToDto());
+            return _bidRepository.GetAllBidsForLotWithUsers(lodId).ToDto();
         }
 
         public IEnumerable<BidDto> GetAllBidsForUser(int userId)
         {
-            return _bidRepository.GetAllBidsForUser(userId).Select(x => x.ToDto());
+            return _bidRepository.GetAllBidsForUser(userId).ToDto();
         }
 
         public BidDto GetLastBidForLot(int lotId)

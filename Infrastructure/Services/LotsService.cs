@@ -27,7 +27,7 @@ namespace Infrastructure.Services
 
         public IEnumerable<LotDto> GetItems()
         {
-            return _lotRepository.ListAll().Select(x => x.ToDto());
+            return _lotRepository.ListAll().ToDto();
         }
 
         public IEnumerable<LotDto> Find(Expression<Func<LotDto, bool>> predicate)
@@ -59,7 +59,7 @@ namespace Infrastructure.Services
 
         public IEnumerable<LotDto> GetAllWithBids()
         {
-            return _lotRepository.GetAllWithBids().Select(x => x.ToDto());
+            return _lotRepository.GetAllWithBids().ToDto();
         }
 
         public IEnumerable<LotDto> FindWidthBids(Expression<Func<LotDto, bool>> predicate)
@@ -70,7 +70,7 @@ namespace Infrastructure.Services
 
         public IEnumerable<LotDto> GetAllLotsForUser(int lotId)
         {
-            return _lotRepository.GetAllLotsForUser(lotId).Select(x => x.ToDto());
+            return _lotRepository.GetAllLotsForUser(lotId).ToDto();
         }
 
     }
