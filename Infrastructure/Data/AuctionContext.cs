@@ -1,10 +1,12 @@
 ﻿using ApplicationCore.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data
 {
-    public class AuctionContext : DbContext //UOF
+    public class AuctionContext : IdentityDbContext<User, Role, int> //DbContext
     {
         public AuctionContext(DbContextOptions<AuctionContext> options) : base(options)
         {
@@ -14,15 +16,45 @@ namespace Infrastructure.Data
         public DbSet<Bid> Bids { get; set; }
         public DbSet<Lot> Lots { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<Role> Roles { get; set; }
+        //public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Bid>(ConfigureBids);
             modelBuilder.Entity<Lot>(ConfigureLot);
             modelBuilder.Entity<User>(ConfigureUser);
             modelBuilder.Entity<Category>(ConfigureCategory);
+
+//
+//            modelBuilder.Entity<User>(i => {
+//                i.ToTable("Users");
+//                i.HasKey(x => x.Id);
+//            });
+//            modelBuilder.Entity<Role>(i => {
+//                i.ToTable("Role");
+//                i.HasKey(x => x.Id);
+//            });
+//            modelBuilder.Entity<IdentityUserRole<int>>(i => {
+//                i.ToTable("UserRole");
+//                i.HasKey(x => new { x.RoleId, x.UserId });
+//            });
+//            modelBuilder.Entity<IdentityUserLogin<int>>(i => {
+//                i.ToTable("UserLogin");
+//                i.HasKey(x => new { x.ProviderKey, x.LoginProvider });
+//            });
+//            modelBuilder.Entity<IdentityRoleClaim<int>>(i => {
+//                i.ToTable("RoleClaims");
+//                i.HasKey(x => x.Id);
+//            });
+//            modelBuilder.Entity<IdentityUserClaim<int>>(i => {
+//                i.ToTable("UserClaims");
+//                i.HasKey(x => x.Id);
+//            });
+
+
         }
 
         private void ConfigureBids(EntityTypeBuilder<Bid> builder)
