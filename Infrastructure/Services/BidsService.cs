@@ -19,7 +19,6 @@ namespace Infrastructure.Services
 
         }
 
-
         public BidDto GetItem(int id)
         {
             return _bidRepository.GetById(id)?.ToDto();
@@ -37,7 +36,9 @@ namespace Infrastructure.Services
 
         public void Update(BidDto bid)
         {
-            _bidRepository.Update(bid.ToDal());
+            var orm = _bidRepository.GetById(bid.BidId);
+            orm = bid.ToDal(orm);
+            _bidRepository.Update(orm);
         }
 
         public void RemoveItem(int id)

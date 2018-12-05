@@ -71,7 +71,9 @@ namespace Infrastructure.Services
 
         public void Update(UserDto user)
         {
-            _userRepository.Update(user.ToDal());
+            var orm = _userRepository.GetById(user.UserId);
+            orm = user.ToDal(orm);
+            _userRepository.Update(orm);
         }
 
         public void MakeBid(int lotId, int bidderId, decimal bidValue)

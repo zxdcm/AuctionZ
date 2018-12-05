@@ -61,11 +61,11 @@ namespace Infrastructure.Data
         {
             return new List<User>()
             {
-                new User { Name  = "User 1" },
-                new User { Name = "User 2" },
-                new User { Name  = "User 3" },
-                new User { Name  = "User 4" },
-                new User { Name  = "User 5" },
+                new User { FirstName  = "User 1" },
+                new User { FirstName= "User 2" },
+                new User { FirstName = "User 3" },
+                new User { FirstName = "User 4" },
+                new User { FirstName= "User 5" },
             };
         }
 

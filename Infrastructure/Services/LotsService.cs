@@ -43,7 +43,9 @@ namespace Infrastructure.Services
 
         public void Update(LotDto lot)
         {
-            _lotRepository.Update(lot.ToDal());
+            var orm = _lotRepository.GetById(lot.LotId);
+            orm = lot.ToDal(orm);
+            _lotRepository.Update(orm);
         }
 
         public void RemoveItem(int id)
