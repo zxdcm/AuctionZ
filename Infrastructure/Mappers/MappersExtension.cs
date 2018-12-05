@@ -12,6 +12,7 @@ namespace Infrastructure.Mappers
 
         #region LotMappers
         public static Lot ToDal(this LotDto dto) => Mapper.Map<Lot>(dto);
+        public static Lot ToDal(this LotDto dto, Lot orm) => Mapper.Map(dto, orm);
         public static LotDto ToDto(this Lot entity) => Mapper.Map<LotDto>(entity);
 
         public static IEnumerable<Lot> ToDal(this IEnumerable<LotDto> dto) 
@@ -25,6 +26,7 @@ namespace Infrastructure.Mappers
         #region BidMappers
 
         public static Bid ToDal(this BidDto dto) => Mapper.Map<Bid>(dto);
+        public static Bid ToDal(this BidDto dto, Bid orm) => Mapper.Map(dto, orm);
         public static BidDto ToDto(this Bid entity) => Mapper.Map<BidDto>(entity);
 
         public static IEnumerable<Bid> ToDal(this IEnumerable<BidDto> dto) 
@@ -38,6 +40,7 @@ namespace Infrastructure.Mappers
         #region UserMappers
 
         public static User ToDal(this UserDto dto) => Mapper.Map<User>(dto);
+        public static User ToDal(this UserDto dto, User orm) => Mapper.Map(dto, orm);
         public static UserDto ToDto(this User entity) => Mapper.Map<UserDto>(entity);
 
         public static IEnumerable<User> ToDal(this IEnumerable<UserDto> dto) => 
@@ -50,9 +53,18 @@ namespace Infrastructure.Mappers
         #region CategoryMappers
 
 
+
         public static Category ToDal(this CategoryDto category) => Mapper.Map<Category>(category);
+        public static Category ToDal(this CategoryDto dto, Category orm) => Mapper.Map(dto, orm);
 
         public static CategoryDto ToDto(this Category category) => Mapper.Map<CategoryDto>(category);
+
+
+        public static IEnumerable<Category> ToDal(this IEnumerable<CategoryDto> dto) =>
+            Mapper.Map<IEnumerable<Category>>(dto);
+        public static IEnumerable<CategoryDto> ToDto(this IEnumerable<Category> entity) =>
+            Mapper.Map<IEnumerable<CategoryDto>>(entity);
+
 
         #endregion
 
