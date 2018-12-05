@@ -62,6 +62,7 @@ namespace AuctionZ
             services.AddScoped<ILotsService, LotsService>();
             services.AddScoped<IBidsService, BidsService>();
             services.AddScoped<IUserServices, UsersService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AuctionContext>()
