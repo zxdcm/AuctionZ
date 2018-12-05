@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace ApplicationCore.Entities
 {
     public class User : IdentityUser<int>
     {
+        [NotMapped]
         public int UserId
         {
             get => Id;
