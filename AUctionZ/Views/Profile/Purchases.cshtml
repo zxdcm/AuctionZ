@@ -1,0 +1,48 @@
+﻿@model IEnumerable<LotViewModel>
+
+@{
+    Layout = "_ProfileLayout";
+    ViewBag.Title = "My purchases";
+    string NoResults = "No purchases";
+}
+
+@if (!Model.Any())
+{
+    <div style="margin-top: 1%" class="jumbotron">
+        <h1>@NoResults</h1>
+        <b>Suddenly you don't have purchases.</b>
+    </div>
+}
+else
+{    <div style="margin-top: 1%" class="jumbotron">
+         <h2>My purchases</h2>
+     </div>
+    <div class="row">
+        <div class="panel panel-default" style="margin-top:20px">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Date of purchase</th>
+                    <th>Lot seller</th>
+                    <th>Lot seller contact</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var lot in Model)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(lot.Name, "Details", "Auction", new { lotId = lot.LotId })</td>
+                        <td>@lot.Price</td>
+                        <td>@lot.ExpirationTime.ToString()</td>
+                        <th>@lot.User.UserName</th>
+                        <th>@lot.User.Email</th>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+

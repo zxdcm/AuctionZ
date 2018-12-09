@@ -1,0 +1,50 @@
+﻿@model LotsViewModel  
+@{
+    Layout = "_ProfileLayout";
+    string NoResults = "No lots exist or found";
+
+    var activeList = new SelectList(new[]
+    {
+            new {active = (bool?) null, label = "All"},
+            new {active = (bool?) true, label = "Yes"},
+            new {active = (bool?) false, label = "No"},
+    }, "active", "label", @Model.Filter.Active);
+}
+
+
+<div>
+    <p>
+        <a class="btn btn-primary" asp-action="CreateLot">Create new lot</a>
+    </p>
+</div>
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">Title: </label>
+        <input name="title" asp-for="Filter.SelectedTitle" class="form-control" />
+        <label class="control-label">Category: </label>
+        <select name="category" asp-for="Filter.SelectedCategory" asp-items="@Model.Filter.Categories" class="form-control"></select>
+        <label class="control-label">IsActive</label>
+        <select name="active" asp-for="Filter.Active" asp-items="activeList" class="form-control">IsActive</select>
+        <input type="submit" value="Apply filter" class="btn btn-primary" />
+    </div>
+</form>
+
+@if (!Model.Lots.Any())
+{
+    <div style="margin-top: 1%" class="jumbotron">
+        <h1>@NoResults</h1>
+        <b>Try to specify other filter params or create new one</b>
+    </div>
+}
+else
+{
+    <partial name="_Lots" model="@Model.Lots"/>
+    <div>
+        <page-link page-model="Model.Pagination" 
+                   page-action="Lots",
+                   page-url-category="@Model.Filter.SelectedCategory",
+                   page-url-title="@Model.Filter.SelectedTitle",
+                   page-url-active="@Model.Filter.Active">
+        </page-link>
+    </div>
+}

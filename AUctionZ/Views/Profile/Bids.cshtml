@@ -1,0 +1,44 @@
+﻿@model IEnumerable<AuctionZ.Models.BidViewModel>
+
+@{
+    Layout = "_ProfileLayout";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfBid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LotId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LotId)
+            </td>
+            <td>
+                <a asp-controller="Auction" 
+                   asp-action="Details" 
+                   asp-route-lotId="@item.LotId">
+                    Details
+                </a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

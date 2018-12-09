@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+
+<div>
+    <h4>Select managed entity</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a asp-action="Info">Profile info</a></li>
+                <li><a asp-action="Lots">My Lots</a></li>
+                <li><a asp-action="Purchases">My Purchases</a></li>
+                <li><a asp-action="Bids">My Bids</a></li>
+            </ul>
+        </div>
+        <div class="col-md-9">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}
