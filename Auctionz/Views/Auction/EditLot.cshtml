@@ -4,12 +4,12 @@
 }
 
 <div class="col-md-4">
-    <form asp-controller="Auction" asp-action="EditLot">
+    <form asp-action="EditLot" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <input asp-for="LotId" hidden="true">
-            <input asp-for="UserId" hidden="true"/>
-            <input asp-for="Price" hidden="true"/>
+            <input asp-for="UserId" hidden="true" />
+            <input asp-for="Price" hidden="true" />
         </div>
 
         <div class="form-group">
@@ -18,19 +18,18 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Image" class="control-label"></label>
-            <input asp-for="Image" class="form-control" />
-            <span asp-validation-for="Image" class="text-danger"></span>
+            <label asp-for="ImageFile" class="control-label"></label>
+            <input asp-for="ImageFile" type="file" class="form-control" />
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="form-group datepicker">
             <label asp-for="ExpirationTime" class="control-label"></label>
-            <input asp-for="ExpirationTime" class="form-control" />
+            <input id="expirationPicker" type="text" asp-for="ExpirationTime" class="form-control" />
             <span asp-validation-for="ExpirationTime" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="CategoryId" class="control-label"></label>
-            <select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control">
-            </select>
+            <select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control"></select>
             <span asp-validation-for="CategoryId" class="text-danger"></span>
         </div>
         <div class="form-group">
@@ -39,11 +38,11 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <input type="submit" value="Save" class="btn btn-default" />
+            <input type="submit" value="Save" class="btn btn-success" />
+            <a class="btn btn-primary" asp-action="Index" onclick="history.go(-1); return false;">Back to List</a>
         </div>
     </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<script src="~/js/expirationPicker.js"></script>
