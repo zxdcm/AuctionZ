@@ -39,6 +39,12 @@ function CreateCategory(name) {
             reset();
             $("table tbody").append(row(category));
             hideOrShow(+category.length);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            if (xhr.status == 400) {
+                console.log(xhr.responseText);
+                alert(xhr.responseText);
+            }
         }
     });
 }
