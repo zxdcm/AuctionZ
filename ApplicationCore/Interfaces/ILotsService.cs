@@ -11,6 +11,10 @@ namespace ApplicationCore.Interfaces
         IEnumerable<LotDto> FindWidthBids(Expression<Func<LotDto, bool>> predicate);
         IEnumerable<LotDto> GetAllWithBids();
         IEnumerable<LotDto> GetAllLotsForUser(int userId);
+        IEnumerable<LotDto> GetAllLots(LotsFilterCriteria criteria);
         LotDto GetByIdWithBids(int id);
+        int GetLotsCount(LotsFilterCriteria criteria);
+        IEnumerable<LotDto> GetAllLotsWithUsers(LotsFilterCriteria criteria);
+        IEnumerable<LotDto> GetUserPurchases(int userId);
     }
 }

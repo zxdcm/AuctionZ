@@ -10,5 +10,9 @@ namespace ApplicationCore.Interfaces
         Task<IdentityResult> TryRegister(UserDto user, string password);
         Task<SignInResult> TryLogin(string email, string password);
         Task Logout();
+        Task<bool> IsInRoleAsync(UserDto user, string role);
+        Task<IdentityResult> AddToRoleAsync(UserDto user, string role);
+        Task<IdentityResult> RemoveFromRoleAsync(UserDto user, string role);
+
     }
 }

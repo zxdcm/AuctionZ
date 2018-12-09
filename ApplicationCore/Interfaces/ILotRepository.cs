@@ -10,6 +10,10 @@ namespace ApplicationCore.Interfaces
         IEnumerable<Lot> FindWithBids(Expression<Func<Lot, bool>> predicate);
         IEnumerable<Lot> GetAllWithBids();
         IEnumerable<Lot> GetAllLotsForUser(int lotId);
+        IEnumerable<Lot> GetAllLots(LotsFilterCriteria criteria);
         Lot GetByIdWithBids(int id);
+        int GetLotsCount(LotsFilterCriteria criteria);
+        IEnumerable<Lot> GetAllLotsWithUsers(LotsFilterCriteria criteria);
+        IEnumerable<Lot> GetUserPurchases(int userId);
     }
 }

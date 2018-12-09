@@ -12,5 +12,6 @@ namespace ApplicationCore.Interfaces
         IEnumerable<BidDto> GetAllBidsForLotWithUsers(int lotId);
         IEnumerable<BidDto> GetAllBidsForUser(int userId);
         BidDto GetLastBidForLot(int lotId);
+
     }
 }
