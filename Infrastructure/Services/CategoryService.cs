@@ -34,7 +34,6 @@ namespace Infrastructure.Services
 
         public void RemoveItem(int id)
         {
-            var amount = AmountOfLots(id);
             var category = _categoryRepository.GetById(id);
             _categoryRepository.Delete(category);
         }
