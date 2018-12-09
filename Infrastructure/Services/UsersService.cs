@@ -15,7 +15,6 @@ namespace Infrastructure.Services
     public class UsersService : IUserServices
     {
 
-        private readonly IUserRepository _userRepository;
         //        private readonly Lazy<UserManager<User>> _userManager;
         //        private readonly Lazy<RoleManager<Role>> _roleManager;
         //        private readonly Lazy<SignInManager<User>> _signinManager;
@@ -28,7 +27,7 @@ namespace Infrastructure.Services
 
         private readonly UserManager<User> UserManager;
         private readonly SignInManager<User> SigninManager;
-
+        private readonly IUserRepository _userRepository;
 
         public UsersService(IUserRepository userRepository, 
             UserManager<User> userManager,
@@ -39,6 +38,7 @@ namespace Infrastructure.Services
         {
             UserManager = userManager;
             SigninManager = signinManager;
+            _userRepository = userRepository;
 //            _userManager = userManager;
 //            _signinManager = signinManager;
         }
@@ -50,7 +50,7 @@ namespace Infrastructure.Services
 
         public IEnumerable<UserDto> GetItems()
         {
-            return _userRepository.ListAll().ToDto();
+            return _userRepository.ListAll()?.ToDto();
         }
 
         public void RemoveItem(int id)
@@ -95,6 +95,23 @@ namespace Infrastructure.Services
                 return await SigninManager.PasswordSignInAsync(user, password, false, false);
             }
             return null;
+        }
+
+        public async Task<bool> IsInRoleAsync(UserDto user, string role)
+        {
+            return await UserManager.IsInRoleAsync(user.ToDal(), role);
+        }
+
+        public async Task<IdentityResult> AddToRoleAsync(UserDto user, string role)
+        {
+            var orm = await UserManager.FindByIdAsync(user.UserId.ToString());
+            return await UserManager.AddToRoleAsync(orm, role);
+        }
+
+        public async Task<IdentityResult> RemoveFromRoleAsync(UserDto user, string role)
+        {
+            var orm = await UserManager.FindByIdAsync(user.UserId.ToString());
+            return await UserManager.RemoveFromRoleAsync(orm, role);
         }
 
         public async Task Logout() => await SigninManager.SignOutAsync();
