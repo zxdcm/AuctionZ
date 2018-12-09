@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@using ApplicationCore.Entities
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager;
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -26,36 +30,26 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">AuctionZ</a>
+                <a asp-area="" asp-controller="Auction" asp-action="Index" class="navbar-brand">AuctionZ</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Auction" asp-action="Index">Auction</a></li>
+                        <li><a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a></li>
+                    <li><a asp-area="" asp-controller="Profile" asp-action="Index">Profile</a></li>
                 </ul>
-                <div class="col-md-2 col-md-offset-10">
-                    <partial name="_LoginPartial"/>
-                </div>
-
+                <partial name="_LoginPartial"/>
             </div>
         </div>
     </nav>
 
     <partial name="_CookieConsentPartial" />
-
-    <div class="container">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - AuctionZ</p>
-        </footer>
-    </div>
-
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+        <script src="~/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
@@ -71,8 +65,16 @@
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+        <script src="~/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
     </environment>
-
+    <div style="margin-top: 2%" class="container">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2018 - AuctionZ</p>
+        </footer>
+    </div>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
