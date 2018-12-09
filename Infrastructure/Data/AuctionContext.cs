@@ -16,48 +16,18 @@ namespace Infrastructure.Data
         public DbSet<Bid> Bids { get; set; }
         public DbSet<Lot> Lots { get; set; }
         public DbSet<Category> Categories { get; set; }
-        //public DbSet<Role> Roles { get; set; }
-        //public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Bid>(ConfigureBids);
+            modelBuilder.Entity<Bid>(ConfigureBid);
             modelBuilder.Entity<Lot>(ConfigureLot);
             modelBuilder.Entity<User>(ConfigureUser);
             modelBuilder.Entity<Category>(ConfigureCategory);
-
-//
-//            modelBuilder.Entity<User>(i => {
-//                i.ToTable("Users");
-//                i.HasKey(x => x.Id);
-//            });
-//            modelBuilder.Entity<Role>(i => {
-//                i.ToTable("Role");
-//                i.HasKey(x => x.Id);
-//            });
-//            modelBuilder.Entity<IdentityUserRole<int>>(i => {
-//                i.ToTable("UserRole");
-//                i.HasKey(x => new { x.RoleId, x.UserId });
-//            });
-//            modelBuilder.Entity<IdentityUserLogin<int>>(i => {
-//                i.ToTable("UserLogin");
-//                i.HasKey(x => new { x.ProviderKey, x.LoginProvider });
-//            });
-//            modelBuilder.Entity<IdentityRoleClaim<int>>(i => {
-//                i.ToTable("RoleClaims");
-//                i.HasKey(x => x.Id);
-//            });
-//            modelBuilder.Entity<IdentityUserClaim<int>>(i => {
-//                i.ToTable("UserClaims");
-//                i.HasKey(x => x.Id);
-//            });
-
-
+            modelBuilder.Entity<Role>(ConfigureRole);
         }
 
-        private void ConfigureBids(EntityTypeBuilder<Bid> builder)
+        private void ConfigureBid(EntityTypeBuilder<Bid> builder)
         {
             builder
                 .Property(x => x.Price)
@@ -84,6 +54,7 @@ namespace Infrastructure.Data
             builder
                 .Property(x => x.Money)
                 .HasColumnType("decimal(18,2)");
+            builder.Ignore(x => x.UserId);
 
         }
 
@@ -93,6 +64,11 @@ namespace Infrastructure.Data
                 .HasMany(x => x.Lots)
                 .WithOne(x => x.Category)
                 .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        private void ConfigureRole(EntityTypeBuilder<Role> builder)
+        {
+            builder.Ignore(x => x.RoleId);
         }
 
     }
