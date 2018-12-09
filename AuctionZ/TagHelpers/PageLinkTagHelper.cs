@@ -13,19 +13,19 @@ namespace AuctionZ.TagHelpers
 {
     public class PageLinkTagHelper : TagHelper
     {
-
-        private readonly IUrlHelperFactory urlHelperFactory;
-
+        private IUrlHelperFactory urlHelperFactory;
         public PageLinkTagHelper(IUrlHelperFactory helperFactory)
         {
             urlHelperFactory = helperFactory;
         }
-
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
         public PageViewModel PageModel { get; set; }
         public string PageAction { get; set; }
+
+        [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
+        public Dictionary<string, object> PageUrlValues { get; set; } = new Dictionary<string, object>();
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -57,10 +57,15 @@ namespace AuctionZ.TagHelpers
         {
             TagBuilder item = new TagBuilder("li");
             TagBuilder link = new TagBuilder("a");
-            if (pageNumber == PageModel.PageNumber)
+            if (pageNumber == this.PageModel.PageNumber)
+            {
                 item.AddCssClass("active");
+            }
             else
-                link.Attributes["href"] = urlHelper.Action(PageAction, new { page = pageNumber });
+            {
+                PageUrlValues["page"] = pageNumber;
+                link.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);
+            }
             link.InnerHtml.Append(pageNumber.ToString());
             item.InnerHtml.AppendHtml(link);
             return item;
