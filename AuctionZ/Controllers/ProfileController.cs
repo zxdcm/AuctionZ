@@ -5,80 +5,93 @@ using System.IO;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using ApplicationCore;
 using ApplicationCore.DTO;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
 using AuctionZ.Models;
 using AuctionZ.Models.MappingProfiles;
+using AuctionZ.Models.Utils;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
+using static AuctionZ.Utils.Utils;
+using AuctionZ.Models.MappingProfiles;
 
 namespace AuctionZ.Controllers
 {
-    public class ProfileController : Controller
+
+    [Authorize]
+    public class ProfileController : BaseController
     {
 
         private readonly ILotsService _lotsService;
         private readonly IBidsService _bidsService;
         private readonly IUserServices _usersServices;
-        private readonly int USER_ID;
-        private readonly IHostingEnvironment _environment;
         private readonly ILogger<ProfileController> _logger;
 
-        public ProfileController(IHostingEnvironment environment, ILogger<ProfileController> logger, 
-            IMapper mapper, ILotsService lotsService, IBidsService bidsService,
+        public ProfileController(ILogger<ProfileController> logger,
+            ILotsService lotsService, 
+            IBidsService bidsService,
             IUserServices usersService, ICategoryRepository categoryRepository)
         {
-            _environment = environment;
             _lotsService = lotsService;
             _bidsService = bidsService;
             _usersServices = usersService;
-            USER_ID = 2; // Todo remove
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Index() => RedirectToAction(nameof(Info));
 
         [HttpGet]
-        public IActionResult EditLot(int lotId)
+        public IActionResult Info()
         {
-            var lotVm = _lotsService.GetItem(lotId).ToVm();
-            lotVm.Categories = GetCategories();
-            return View(lotVm);
+            var profile = _usersServices.GetItem(UserId).ToVm();
+            return View(profile);
         }
 
-
-        [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult EditLot(int lotId, LotViewModel vm)
+        public IActionResult Info(ProfileViewModel vm)
         {
-            if (ModelState.IsValid)
-            {
-                _logger.LogCritical($"{vm.ImageFile?.Name} ImageFile NULL ? {vm.ImageFile == null}");
-                SaveImage(vm);
-                var lot = vm.ToDto();
-                _lotsService.Update(lot);
-                return RedirectToAction(nameof(AuctionController.Details), "Auction", new { lotId = lot.LotId}); //Replace hardcored call
-                //return RedirectToAction(nameof(Details), new { lotId = lot.LotId });
-            }
-            // Refetch data
-            vm.Categories = GetCategories();
-            return View(vm);
+            _usersServices.Update(vm.ToDto());
+            return RedirectToAction(nameof(Info));
         }
 
+        public IActionResult Lots(int? category, string title, int page = 1, bool? active=null)
+        {
+            int pageSize = 4;
+            var criteria = new LotsFilterCriteria()
+                { Page = page, Category = category, Title = title, PageSize = pageSize, Active = active, UserId = UserId};
+            var lots = _lotsService.GetAllLots(criteria).ToVm();
+            var model = new LotsViewModel()
+            {
+                Lots = lots,
+                Pagination = new PageViewModel(_lotsService.GetLotsCount(criteria), page, pageSize),
+                Filter = new FilterViewModel(GetCategories(), title, category, active)
+            };
+            return View(model);
+        }
+
+        public IActionResult Bids()
+        {
+            var lots = _bidsService.GetAllBidsForUser(UserId).ToVm();
+            return View(lots);
+        }
+
+
+        public IActionResult Purchases()
+        {
+            var lots = _lotsService.GetUserPurchases(UserId).ToVm();
+            return View(lots);
+        }
 
         [HttpGet]
         public IActionResult CreateLot()
         {
-            var vm = new LotViewModel() { UserId = USER_ID }; //TOdo replace
-            vm.Categories = GetCategories();
+            var vm = new LotViewModel {UserId = UserId, Categories = GetCategoriesSelectListItems()};
             return View(vm);
         }
 
@@ -87,85 +100,34 @@ namespace AuctionZ.Controllers
         {
             if (ModelState.IsValid)
             {
-                SaveImage(vm);
-                var lot = vm.ToDto();
-                lot = _lotsService.AddItem(lot);
-                return RedirectToAction(nameof(MyLots), lot.LotId);
-                //return RedirectToAction(nameof(Details), new { lotId = lot.LotId });
+                if (vm.ImageFile != null)
+                    vm.ImageUrl = SaveImage(vm.ImageFile,
+                                      HttpContext.RequestServices.GetRequiredService<IHostingEnvironment>()) ?? "no_image.jpg";;
+                var lot = _lotsService.AddItem(vm.ToDto());
+                return RedirectToAction(nameof(Lots), lot.LotId);
             }
 
-            vm.Categories = GetCategories();
+            vm.Categories = GetCategoriesSelectListItems(vm.CategoryId);
             return View(vm);
         }
 
-        [HttpGet]
-        public IActionResult DeleteLot(int lotId)
+        private IEnumerable<CategoryDto> GetCategories()
         {
-            var lotVm = _lotsService.GetItem(lotId).ToVm();
-            return View(lotVm);
+            var categoryService = HttpContext.RequestServices.GetRequiredService<ICategoryService>();
+            return categoryService.GetItems();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteLotConfirmed(int lotId)
+        private IEnumerable<SelectListItem> GetCategoriesSelectListItems(int? selectedId = 0)
         {
-            _lotsService.RemoveItem(lotId);
-            return RedirectToAction(nameof(MyLots));
-        }
-
-        public IActionResult MyLots()
-        {
-            var lots = _lotsService.GetAllLotsForUser(USER_ID).ToVm();
-            return View(lots);
-        }
-
-        public IActionResult MyBids()
-        {
-            var lots = _bidsService.GetAllBidsForUser(USER_ID).ToVm();
-            return View(lots);
-        }
-
-        public IActionResult MyPurchases()
-        {
-            return View();
-            //var lots = _mapper.Map<IEnumerable<LotViewModel>>(_bidsService.GetAllLotsForUser(USER_ID));
-            //return View(lots);
-        }
-
-
-        [NonAction]
-        public IEnumerable<SelectListItem> GetCategories()
-        {
-            var categoryRepository = HttpContext.RequestServices.GetRequiredService<ICategoryRepository>();
-            return categoryRepository.ListAll()
+            return GetCategories()
                 .Select(c => new SelectListItem()
                 {
                     Text = c.Name,
-                    Value = c.CategoryId.ToString()
+                    Value = c.CategoryId.ToString(),
+                    Selected = selectedId == c.CategoryId
                 });
         }
 
-        [NonAction]
-        public void SaveImage(LotViewModel vm)
-        {
-            if (vm.ImageFile != null)
-            {
-                var fileName = GetUniqueName(vm.ImageFile.FileName);
-                var uploads = Path.Combine(_environment.WebRootPath, "images");
-                var filePath = Path.Combine(uploads, fileName);
-                vm.ImageFile.CopyTo(new FileStream(filePath, FileMode.Create));
-                vm.ImageUrl = fileName;
-            }
-            else if (vm.ImageUrl == null)
-                vm.ImageUrl = "no_image.jpg";
-        }
 
-        [NonAction]
-        public string GetUniqueName(string fileName)
-        {
-            return Path.GetFileNameWithoutExtension(fileName)
-                   + "_" + Guid.NewGuid().ToString().Substring(0, 4)
-                   + Path.GetExtension(fileName);
-        }
     }
 }
