@@ -4,11 +4,11 @@ using AutoMapper;
 
 namespace Infrastructure.Mappers
 {
-    public class LotDtoMappingProfile : Profile
+    public class RoleDtoMappingProfile : Profile
     {
-        public LotDtoMappingProfile()
+        public RoleDtoMappingProfile()
         {
-            CreateMap<LotDto, Lot>().ReverseMap();
+            CreateMap<RoleDto, Role>().ReverseMap();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Infrastructure.Mappers
       
 
         #region LotMappers
+
         public static Lot ToDal(this LotDto dto) => Mapper.Map<Lot>(dto);
         public static Lot ToDal(this LotDto dto, Lot orm) => Mapper.Map(dto, orm);
         public static LotDto ToDto(this Lot entity) => Mapper.Map<LotDto>(entity);
@@ -66,6 +67,19 @@ namespace Infrastructure.Mappers
             Mapper.Map<IEnumerable<CategoryDto>>(entity);
 
 
+        #endregion
+
+        #region RoleMappers
+
+
+        public static Role ToDal(this RoleDto dto) => Mapper.Map<Role>(dto);
+        public static User ToDal(this RoleDto dto, User orm) => Mapper.Map(dto, orm);
+        public static RoleDto ToDto(this Role entity) => Mapper.Map<RoleDto>(entity);
+
+        public static IEnumerable<Role> ToDal(this IEnumerable<RoleDto> dto) =>
+            Mapper.Map<IEnumerable<Role>>(dto);
+        public static IEnumerable<RoleDto> ToDto(this IEnumerable<Role> entity) =>
+            Mapper.Map<IEnumerable<RoleDto>>(entity);
         #endregion
 
     }
