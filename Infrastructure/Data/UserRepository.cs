@@ -11,9 +11,7 @@ namespace Infrastructure.Data
     {
 
         public UserRepository(AuctionContext dbContext) : base(dbContext)
-        {
-
-        }
+        {}
 
 
         public void MakeBid(int lotId, int userId, decimal bidValue)
@@ -23,20 +21,22 @@ namespace Infrastructure.Data
                 var lot = _context.Lots.First(x => x.LotId == lotId);
                 var user = _context.Users.First(x => x.UserId == userId);
 
-                var lastBid = lot.Bids
+                var lastBid =  _context.Bids 
+                    .Where(b => b.LotId == lotId)
                     .OrderByDescending(x => x.Price)
                     .FirstOrDefault();
 
                 if (lastBid != null)
                 {
                     var lastBidder = _context.Users.First(x => x.UserId == lastBid.UserId);
-                    lastBidder.Money -= bidValue;
+                    lastBidder.Money += lastBid.Price;
                 }
 
                 user.Money -= bidValue;
 
-                lot.Bids.Add(new Bid()
+                _context.Bids.Add(new Bid()
                 {
+                    LotId = lot.LotId,
                     DateOfBid = DateTime.Now,
                     Price = bidValue,
                     User = user
