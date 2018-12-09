@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ApplicationCore.DTO;
 using ApplicationCore.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
 namespace AuctionZ.Models
 {
-    public class LotViewModel
+    public class LotViewModel : IValidatableObject
     {
         [ScaffoldColumn(false)]
         public int LotId { get; set; }
@@ -22,7 +24,7 @@ namespace AuctionZ.Models
 
         [Display(Name = "Starting price")]
         [DataType(DataType.Currency)]
-        [Range(typeof(decimal), "0", "10000", ErrorMessage = "Invalid price")]
+        [Range(typeof(decimal), "1", "10000", ErrorMessage = "Invalid price")]
         [Required(ErrorMessage = "The field must be filled")]
         public decimal Price { get; set; }
 
@@ -33,10 +35,11 @@ namespace AuctionZ.Models
 
         [Display(Name = "Category")]
         [Required(ErrorMessage = "The category is required!")]
-        public string CategoryId { get; set; }
+        public int CategoryId { get; set; }
         
         public string Description { get; set; }
         public int UserId { get; set; }
+        public UserDto User { get; set; }
 
         [Display(Name ="Image")]
         public string ImageUrl { get; set; }
@@ -47,5 +50,14 @@ namespace AuctionZ.Models
         [Display(Name = "Image")]
         public IFormFile ImageFile { get; set; }
 
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            List<ValidationResult> results = new List<ValidationResult>();
+            if (ExpirationTime < DateTime.Now)
+            {
+                results.Add(new ValidationResult($"Expiration date must be greater than {DateTime.Now}", new[] { "ExpirationTime" }));
+            }
+            return results;
+        }
     }
 }
