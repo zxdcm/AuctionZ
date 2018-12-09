@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
+using ApplicationCore;
 using ApplicationCore.DTO;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
@@ -54,6 +55,13 @@ namespace Infrastructure.Services
             _lotRepository.Delete(lot);
         }
 
+        public IEnumerable<LotDto> GetAllLots(LotsFilterCriteria criteria)
+        {
+            if (criteria.Category == 0) // Skip default;
+                criteria.Category = null;
+            return _lotRepository.GetAllLots(criteria).ToDto();
+        }
+
         public LotDto GetByIdWithBids(int id)
         {
             return _lotRepository.GetByIdWithBids(id).ToDto();
@@ -73,6 +81,23 @@ namespace Infrastructure.Services
         public IEnumerable<LotDto> GetAllLotsForUser(int lotId)
         {
             return _lotRepository.GetAllLotsForUser(lotId).ToDto();
+        }
+
+        public int GetLotsCount(LotsFilterCriteria criteria)
+        {
+            return _lotRepository.GetLotsCount(criteria);
+        }
+
+        public IEnumerable<LotDto> GetAllLotsWithUsers(LotsFilterCriteria criteria)
+        {
+            if (criteria.Category == 0) // Skip default;
+                criteria.Category = null;
+            return _lotRepository.GetAllLotsWithUsers(criteria).ToDto();
+        }
+
+        public IEnumerable<LotDto> GetUserPurchases(int userId)
+        {
+            return _lotRepository.GetUserPurchases(userId).ToDto();
         }
 
     }
