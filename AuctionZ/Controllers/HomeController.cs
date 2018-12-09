@@ -11,10 +11,9 @@ namespace AuctionZ.Controllers
     public class HomeController : Controller
     {
 
-
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Auction");
         }
 
         public IActionResult About()
