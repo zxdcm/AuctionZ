@@ -1,0 +1,41 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+<h4>Categories</h4>
+
+<div class="row">
+    <div class="container-fluid">
+        <button id="openModal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add category</button>
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Category</h4>
+                    </div>
+                    <form id="categoryForm">
+                        <div class="modal-body">
+                            <input type="hidden" id="id" />
+                            <label>Category name</label> 
+                            <input id="name" type="text" name="name" />
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-success" />
+                            <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <table id="categoriesTable" class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <script src="~/js/category.js"></script>
+    </div>
+</div>
