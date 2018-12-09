@@ -1,0 +1,70 @@
+﻿@using ApplicationCore.Entities
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Routing
+@model IEnumerable<LotViewModel>
+@{
+    var controller = Context.GetRouteData().Values["controller"].ToString();
+    var expanded = controller == "Admin";
+
+}
+<table class="table table-bordered" style="margin-top: 2%">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpirationTime)
+            </th>
+            @if (expanded) { <th>Owner</th>}
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpirationTime)
+                </td>
+                @if (expanded) { <td>
+                                     @Html.DisplayFor(modelItem => item.User.UserName)
+                                 </td>
+
+                }
+                <td>
+
+                    <a style="float: left; margin-right: 2%"
+                       asp-controller="Auction"
+                       asp-action="Details"
+                       asp-route-lotId="@item.LotId"
+                       class="btn btn-info">
+                        Details
+                    </a>
+                    <a style="float: left; margin-right: 2% "
+                       asp-controller="Auction" asp-action="EditLot"
+                       asp-route-lotid="@item.LotId"
+                       class="btn btn-success">
+                        EditLot
+                    </a>
+                    <form class="form-inline" style="float: left; margin-right: 2% " method="post" asp-controller="Auction" asp-action="DeleteLot"
+                          asp-route-lotId="@item.LotId"
+                          asp-antiforgery="true">
+                        <button type="submit" onclick="if (!confirm('Are you sure want to delete lot?')) return;"
+                               class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
