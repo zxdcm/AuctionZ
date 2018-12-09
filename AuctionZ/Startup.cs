@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using IRoleService = ApplicationCore.Interfaces.IRoleService;
 
 
 namespace AuctionZ
@@ -63,10 +64,14 @@ namespace AuctionZ
             services.AddScoped<IBidsService, BidsService>();
             services.AddScoped<IUserServices, UsersService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AuctionContext>()
                 .AddDefaultTokenProviders();
+
+
 
 //
 //            services.AddScoped(provider => 
@@ -76,12 +81,6 @@ namespace AuctionZ
 //            services.AddScoped(provider =>
 //                new Lazy<SignInManager<User>>(provider.GetService<SignInManager<User>>()));
 
-
-            //services.AddAutoMapper(typeof(Startup).Assembly);
-            //Mapper.Initialize(cfg => cfg.AddProfiles((Assembly.GetAssembly(typeof(LotMappingProfile)))));
-            //Mapper.Initialize(cfg => cfg.AddProfiles((Assembly.GetAssembly(typeof(Startup)))));
-
-            //Mapper.Initialize(cfg => { cfg.AddProfile<RegisterMappingProfile>(); });
 
             Mapper.Initialize(cfg => cfg.AddProfiles(
                 Assembly.GetAssembly(typeof(AuctionContext)),
