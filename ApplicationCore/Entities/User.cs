@@ -7,7 +7,7 @@ namespace ApplicationCore.Entities
 {
     public class User : IdentityUser<int>
     {
-        [NotMapped]
+
         public int UserId
         {
             get => Id;
@@ -19,7 +19,6 @@ namespace ApplicationCore.Entities
         public string LastName { get; set; }
         public ICollection<Bid> Bids { get; set; }
         public ICollection<Lot> Lots { get; set; }
-
 
     }
 }
