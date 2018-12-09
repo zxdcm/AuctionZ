@@ -10,6 +10,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace AuctionZ.Controllers
@@ -18,23 +19,20 @@ namespace AuctionZ.Controllers
     {
 
         private readonly IUserServices _userService;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(IUserServices userServices)
+        public AccountController(IUserServices userServices,
+                                 ILogger<AccountController> logger)
         {
             _userService = userServices;
+            _logger = logger;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Index => View("~/Auction/Index");
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register()
-        {
-            return View();
-        }
+        public IActionResult Register() => View();
 
         [HttpPost]
         [AllowAnonymous]
@@ -44,11 +42,10 @@ namespace AuctionZ.Controllers
             {
                 var result = await _userService.TryRegister(vm.ToDto(), vm.Password);
                 if (result.Succeeded)
-                    RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
                 foreach (var error in result.Errors)
                     ModelState.AddModelError("", error.Description);
             }
-
             return View();
         }
 
@@ -72,8 +69,9 @@ namespace AuctionZ.Controllers
                     return Redirect(returnUrl ?? "/");
                 ModelState.AddModelError(nameof(LoginViewModel.Email),
                     "Invalid email or password");
+                return View();
             }
-            return View();
+            return RedirectToAction("Index", "Auction");
         }
 
         [Authorize]
