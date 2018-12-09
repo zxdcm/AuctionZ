@@ -79,7 +79,7 @@ ipch/
 *.ncb
 *.opendb
 *.opensdf
-*.sdf
+*.sdff
 *.cachefile
 *.VC.db
 *.VC.VC.opendb
@@ -252,7 +252,7 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-*.sln*
+.sln*
 
 # CodeRush
 .cr/
@@ -264,6 +264,6 @@ __pycache__/
 
 #VS Code
 .vscode
-*.sln
 
-*.csproj
+
+.csproj
