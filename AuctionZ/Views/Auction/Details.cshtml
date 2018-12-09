@@ -1,0 +1,106 @@
+﻿@model AuctionZ.Models.LotViewModel
+@{
+    ViewBag.Title = "Auction detail";
+    string NoResults = ViewBag.NoBids;
+    int? currentUserId = User.GetUserId();
+}
+
+<div class="col-md-12" style="margin-top:20px;">
+    <h2 style="text-align:center">@Model.Name</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="~/images/@Model.ImageUrl" style="max-width:100%;" alt="@Model.Name" height="150">
+        </div>
+        <div class="caption col-md-2">
+            <p>
+                Expiration time:
+                @if (DateTime.Now > Model.ExpirationTime)
+                {
+                    <span class="label label-danger">@Model.ExpirationTime, Time is over</span>
+                }
+                else
+                {
+                    <span class="label label-success">@Model.ExpirationTime</span>
+                }
+            </p>
+            <p>Current price: <span class="">@Model.Price.ToString("C")</span></p>
+            @if (currentUserId != Model.UserId && Model.ExpirationTime > DateTime.Now)
+            {
+                <form asp-action="MakeBid" asp-route-lotId="@Model.LotId" method="post">
+                    <br/>
+                    <label class="control-label">Make your bid here:</label>
+                    <div class="form-group">
+                        @Html.TextBox("bidValue", Model.Price + 1.0m, new
+                        {
+                            @class = "form-control",
+                            @data_val = "true",
+                            @data_val_number = "It must be a number",
+                            @data_val_range = "Value in wrong range",
+                            @data_val_range_max = "10000000",
+                            @data_val_range_min = ((int) Model.Price + 1).ToString(),
+                            @data_val_required = "The field can not be blank."
+                        })
+                    </div>
+                    @Html.ValidationMessage("bidValue", new {@class = "text-danger", role = "alert"})
+                    <br/>
+                    <button type="submit" class="btn btn-success">Make your bid</button>
+                </form>
+            }
+            else
+            {
+                string restrict = "You dont have no opportunity to make a bid";
+                <p style="color:orange">@restrict</p>
+            }
+        </div>
+    </div>
+    <br/>
+    @if (currentUserId != null && (currentUserId == @Model.UserId))
+    {
+        <br/>
+        <div class="col-md-4">
+            <a class="btn btn-primary" asp-controller="Auction" asp-action="EditLot" asp-route-lotId="@Model.LotId">EditLot</a>
+            <form class="form-inline" style="float: left; margin-right: 2% " method="post" asp-controller="Auction" asp-action="DeleteLot"
+                  asp-route-lotId="@Model.LotId"
+                  asp-antiforgery="true">
+                <button type="submit" onclick="if (!confirm('Are you sure want to delete lot?')) return;"
+                        class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+        <br/>
+    }
+</div>
+<div class="col-md-12" style="margin-top:10px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">Bids</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Buyer</th>
+                    <th>Bid value</th>
+                    <th>Date of bid</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var bid in Model.Bids)
+                {
+                    <tr>
+                        <td>@bid.User.UserName</td>
+                        <td>@bid.Price</td>
+                        <td>@bid.DateOfBid.ToString("f")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (string.IsNullOrEmpty(NoResults))
+    {
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+            </div>
+        </div>
+    }
+    else
+    {
+        <h3>@ViewBag.NoBids</h3>
+    }
+</div>

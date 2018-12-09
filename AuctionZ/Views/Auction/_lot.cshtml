@@ -2,7 +2,7 @@
 
 
 <h3>@Model.Name</h3>
-<p>Current price: <span class="">@Model.Price</span></p>
+<p>Current price: <span class="">@Model.Price.ToString("c")</span></p>
 <p>
     @if (DateTime.Now > Model.ExpirationTime)
     {
@@ -14,5 +14,7 @@
     }                    
 </p>
 <p>
-    <a class="btn btn-info" asp-action="Details" asp-route-lotId="@Model.LotId"></a>
+    <a class="btn btn-primary" asp-action="Details" asp-route-lotId="@Model.LotId">
+        Details
+    </a>
 </p>

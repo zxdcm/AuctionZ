@@ -1,37 +1,46 @@
-﻿@model AuctionZ.Models.Utils.ResultListViewModel<LotViewModel>
+﻿@model LotsViewModel
 @{
     ViewBag.Title = "Auction";
-    string NoResults = ViewBag.NoLots;
+    string NoResults = ViewBag.NoLots ?? "No lots there";
 }
 
-<h3>No result</h3>
 
-@foreach (var lot in Model.Items)
-{
-    <div class="col-md-12" style="margin-top:20px;">
-        <div class="row">
-            <div class="col-md-4">
-                <img src="~/Images/no_image.jpg" style="max-width:100%;" alt="@lot.Name" height="125">
-            </div>
-            <div class="caption col-md-4">
-                <partial name="_lot" model="lot" />
-            </div>
-
-        </div>
+<!--> </!-->
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">Title: </label>
+        <input name="title" asp-for="Filter.SelectedTitle" class="form-control" /> 
+        <label class="control-label">Category: </label>
+        <select name="category" asp-for="Filter.SelectedCategory" asp-items="@Model.Filter.Categories" class="form-control"></select> 
+        <input type="submit" value="Apply filter" class="btn btn-primary" />
     </div>
-}
-@if (string.IsNullOrEmpty(NoResults))
+</form>
+@if (!Model.Lots.Any())
 {
-    <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-        </div>
+    <div style="margin-top: 1%" class="jumbotron">
+        <h1>@NoResults</h1>
+        <b>Try to specify other filter params</b>
     </div>
 }
 else
 {
-    <h3>@NoResults</h3>
+    foreach (var lot in Model.Lots)
+    {
+     <div class="col-md-12" style="margin-top: 20px;">
+         <div class="row">
+             <div class="col-md-4">
+                 <img src="~/images/@lot.ImageUrl" style="max-width: 100%" height="150" alt="@lot.Name"/>
+             </div>
+             <div class="caption col-md-4">
+                 <partial name="_lot", model="lot"/>
+             </div>
+         </div>
+     </div>
+     }
+    <div>
+        <page-link page-model="Model.Pagination" 
+                   page-action="Index",
+                   page-url-category="@Model.Filter.SelectedCategory",
+                   page-url-title="@Model.Filter.SelectedTitle"></page-link>
+    </div>
 }
-
-<div>
-    <a class="btn-success" asp-action="CreateLot">Test</a>
-</div>
