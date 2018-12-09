@@ -28,5 +28,10 @@ namespace AuctionZ.Models.MappingProfiles
         public static UserDto ToDto(this RegisterViewModel vm)
             => Mapper.Map<UserDto>(vm);
 
+        public static UserDto ToDto(this ProfileViewModel vm)
+            => Mapper.Map<UserDto>(vm);
+        public static ProfileViewModel ToVm(this UserDto vm) 
+            => Mapper.Map<ProfileViewModel>(vm);
+
     }
 }
