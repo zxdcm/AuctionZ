@@ -15,32 +15,17 @@ namespace Infrastructure.Services
     public class UsersService : IUserServices
     {
 
-        //        private readonly Lazy<UserManager<User>> _userManager;
-        //        private readonly Lazy<RoleManager<Role>> _roleManager;
-        //        private readonly Lazy<SignInManager<User>> _signinManager;
-
-        //        private UserManager<User> UserManager => _userManager.Value;
-        //        private SignInManager<User> SigninManager => _signinManager.Value;
-
-        //        private UserManager<User> UserManager => _userManager.Value;
-        //        private SignInManager<User> SigninManager => _signinManager.Value;
-
-        private readonly UserManager<User> UserManager;
-        private readonly SignInManager<User> SigninManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signinManager;
         private readonly IUserRepository _userRepository;
 
         public UsersService(IUserRepository userRepository, 
             UserManager<User> userManager,
             SignInManager<User> signinManager)
-//            Lazy<UserManager<User>> userManager, 
-//            Lazy<RoleManager<Role>> roleManager, 
-//            Lazy<SignInManager<User>> signinManager)
         {
-            UserManager = userManager;
-            SigninManager = signinManager;
+            _userManager = userManager;
+            _signinManager = signinManager;
             _userRepository = userRepository;
-//            _userManager = userManager;
-//            _signinManager = signinManager;
         }
 
         public UserDto GetItem(int id)
@@ -83,38 +68,38 @@ namespace Infrastructure.Services
 
 
         public async Task<IdentityResult> TryRegister(UserDto user, string password) =>
-            await UserManager.CreateAsync(user.ToDal(), password);
+            await _userManager.CreateAsync(user.ToDal(), password);
 
 
         public async Task<SignInResult> TryLogin(string email, string password)
         {
-            var user = await UserManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-                await SigninManager.SignOutAsync();
-                return await SigninManager.PasswordSignInAsync(user, password, false, false);
+                await _signinManager.SignOutAsync();
+                return await _signinManager.PasswordSignInAsync(user, password, false, false);
             }
             return null;
         }
 
         public async Task<bool> IsInRoleAsync(UserDto user, string role)
         {
-            return await UserManager.IsInRoleAsync(user.ToDal(), role);
+            return await _userManager.IsInRoleAsync(user.ToDal(), role);
         }
 
         public async Task<IdentityResult> AddToRoleAsync(UserDto user, string role)
         {
-            var orm = await UserManager.FindByIdAsync(user.UserId.ToString());
-            return await UserManager.AddToRoleAsync(orm, role);
+            var orm = await _userManager.FindByIdAsync(user.UserId.ToString());
+            return await _userManager.AddToRoleAsync(orm, role);
         }
 
         public async Task<IdentityResult> RemoveFromRoleAsync(UserDto user, string role)
         {
-            var orm = await UserManager.FindByIdAsync(user.UserId.ToString());
-            return await UserManager.RemoveFromRoleAsync(orm, role);
+            var orm = await _userManager.FindByIdAsync(user.UserId.ToString());
+            return await _userManager.RemoveFromRoleAsync(orm, role);
         }
 
-        public async Task Logout() => await SigninManager.SignOutAsync();
+        public async Task Logout() => await _signinManager.SignOutAsync();
 
     }
 }
