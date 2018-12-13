@@ -1,5 +1,6 @@
 ﻿@model AuctionZ.Models.LotViewModel
 @{
+
     ViewBag.Title = "Auction detail";
     string NoResults = ViewBag.NoBids;
     int? currentUserId = User.GetUserId();
@@ -23,25 +24,15 @@
                     <span class="label label-success">@Model.ExpirationTime</span>
                 }
             </p>
-            <p>Current price: <span class="">@Model.Price.ToString("C")</span></p>
+            <p>Current price: <span id="currentPrice" class="">@Model.Price.ToString("C")</span></p>
             @if (currentUserId != Model.UserId && Model.ExpirationTime > DateTime.Now)
             {
-                <form asp-action="MakeBid" asp-route-lotId="@Model.LotId" method="post">
+                <form id="makeBidForm" method="post">
                     <br/>
+                    <div asp-validation-summary="All"></div>
+                    <input name="lotId" id="lotId" value="@Model.LotId" hidden/>
                     <label class="control-label">Make your bid here:</label>
-                    <div class="form-group">
-                        @Html.TextBox("bidValue", Model.Price + 1.0m, new
-                        {
-                            @class = "form-control",
-                            @data_val = "true",
-                            @data_val_number = "It must be a number",
-                            @data_val_range = "Value in wrong range",
-                            @data_val_range_max = "10000000",
-                            @data_val_range_min = ((int) Model.Price + 1).ToString(),
-                            @data_val_required = "The field can not be blank."
-                        })
-                    </div>
-                    @Html.ValidationMessage("bidValue", new {@class = "text-danger", role = "alert"})
+                    <input type="text" id="bidValue" name="bidValue" min="@Model.Price+1" required class="form-control"/>
                     <br/>
                     <button type="submit" class="btn btn-success">Make your bid</button>
                 </form>
@@ -52,7 +43,73 @@
                 <p style="color:orange">@restrict</p>
             }
         </div>
-    </div>
+        <script>
+            //            const connection = new signalR.HubConnectionBuilder()
+//                .withUrl("/auction")
+//                .configureLogging(signalR.LogLevel.Information)
+//                .build();
+//
+//
+//            function MakeBid(lotId, bidValue) {
+//                $.ajax({
+//                    url: "/Auction/MakeBid/"+lotId,
+//                    contentType: "application/json",
+//                    method: "POST",
+//                    dataType: "json",
+//                    data: JSON.stringify(
+//                        {
+//                            LotId: lotId,
+//                            Price: bidValue
+//                        }),
+//                    success: function (bid) {
+//                        return;
+//                        $("#bidsTable tbody").prepend(bid['row']); 
+//                    },
+//                    error: function (xhr, ajaxOptions, thrownError) {
+//                        if (xhr.status === 400) {
+//                            let $summary = $(".validation-summary-valid").find('ul');
+//                            $summary.empty();
+//                            $.each(JSON.parse(xhr.responseText),
+//                                function (i, el) {
+//                                    $.each(el.toString().split(","),
+//                                        function (i, el) {
+//                                            $summary.append($("<li>").text(el));
+//                                        });
+//                                });
+//                        }
+//                    }
+//                });
+//            }
+
+
+//            $("#makeBidForm").submit(function (e) {
+//                e.preventDefault();
+//                const lotId = this.elements["lotId"].value;
+//                const bidValue = this.elements["bidValue"].value;
+//                connection.Invoke("MakeBid", lotId, bidValue);
+//            });
+//
+//            connection.on('Error', function (responce) {
+//
+//                let $summary = $(".validation-summary-valid").find('ul');
+//                $summary.empty();
+//                $.each(JSON.parse(responce),
+//                    function (i, el) {
+//                        $.each(el.toString().split(","),
+//                            function (i, el) {
+//                                $summary.append($("<li>").text(el));
+//                            });
+//                    });
+//            });
+//
+//            connection.on('BidMade', function (row, newPrice) {
+//
+//                $("#bidsTable tbody").prepend(row);
+//                $("#currentPrice").innerHTML = newPrice;
+//            });
+//            connection.start();
+        </script>
+        </div>
     <br/>
     @if (currentUserId != null && (currentUserId == @Model.UserId))
     {
@@ -62,7 +119,7 @@
             <form class="form-inline" style="float: left; margin-right: 2% " method="post" asp-controller="Auction" asp-action="DeleteLot"
                   asp-route-lotId="@Model.LotId"
                   asp-antiforgery="true">
-                <button type="submit" onclick="if (!confirm('Are you sure want to delete lot?')) return;"
+                <button type="submit" onclick="if (!confirm('Are you sure want to delete lot?')) return false;"
                         class="btn btn-danger">Delete</button>
             </form>
         </div>
@@ -72,7 +129,7 @@
 <div class="col-md-12" style="margin-top:10px;">
     <div class="panel panel-default">
         <div class="panel-heading">Bids</div>
-        <table class="table">
+        <table class="table" id="bidsTable">
             <thead>
                 <tr>
                     <th>Buyer</th>
@@ -104,3 +161,44 @@
         <h3>@ViewBag.NoBids</h3>
     }
 </div>
+
+<script>
+
+
+    $("#makeBidForm").submit(function (e) {
+        e.preventDefault();
+        const lotId = this.elements["lotId"].value;
+        const bidValue = this.elements["bidValue"].value;
+        AuctionConnection.invoke("MakeBid", @currentUserId, lotId, bidValue);
+    });
+
+    AuctionConnection.on('Error', function (responce) {
+        console.log(responce);
+        let $summary = $(".validation-summary-valid").find('ul');
+        $summary.empty();
+        $.each(JSON.parse(responce),
+            function (i, el) {
+                $.each(el.toString().split(","),
+                    function (i, el) {
+                        $summary.append($("<li>").text(el));
+                    });
+            });
+    });
+
+
+    AuctionConnection.on('BidMade',
+        function (lotId, row, newPrice) {
+            if (lotId !== $("#lotId")) return;
+            $("#bidsTable tbody").prepend(row);
+            //Todo fix table + innerHtml
+            $("#currentPrice").innerHTML = newPrice;
+    });
+
+    AuctionConnection.on("LotEnd",
+        function (lotId, message) {
+            alert(lotId);
+            if (lotId !== $("$lotId")) return;
+            alert(message);
+        });
+
+</script>
