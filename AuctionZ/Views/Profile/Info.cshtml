@@ -15,7 +15,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Money"></label>
-                <label>@Model.Money</label>
+                <input id="funds" asp-for="Money"  hidden="true"/>
+                <label id="fundsLabel">@Model.Money</label>
+                <script type="text/javascript">
+                    function getFunds() {
+                        var funds_el = document.getElementById("funds");
+                        var res = parseInt(funds_el.value) + 1000;
+                        funds_el.value = res;
+                        document.getElementById("fundsLabel").innerHTML = res;
+                    }
+                </script>
+                <button type="button" class="btn btn-warning" onclick="getFunds()">Get funds</button>
             </div>
             <div class="form-group">
                 <label asp-for="Email"></label>
