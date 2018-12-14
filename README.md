@@ -20,6 +20,4 @@ Auction supports following actions:
 - **SignalR** � Library allows server code to send async notifications to client-side web apps
  
 ## Todo
-- Add real-time notifications on lot page.
 - A bit of fixes related to url routes.
-
