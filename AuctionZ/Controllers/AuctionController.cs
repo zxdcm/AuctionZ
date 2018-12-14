@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using ApplicationCore;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using static AuctionZ.Utils.Utils;
@@ -28,14 +30,16 @@ namespace AuctionZ.Controllers
         private readonly IBidsService _bidsService;
         private readonly IUserServices _usersServices;
         private readonly ILogger<AuctionController> _logger;
+        private readonly IHubContext<LotHub> _hubcontext;
 
         public AuctionController(ILogger<AuctionController> logger,
             ILotsService lotsService, IBidsService bidsService,
-            IUserServices userServices)
+            IUserServices userServices, IHubContext<LotHub> hubcontext)
         {
             _lotsService = lotsService;
             _bidsService = bidsService;
             _usersServices = userServices;
+            _hubcontext = hubcontext;
             _logger = logger;
         }
 
@@ -64,7 +68,7 @@ namespace AuctionZ.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles="Admin,User")]
+        [Authorize(Roles="admin,user")]
         public IActionResult EditLot(int lotId)
         {
             var lot = _lotsService.GetItem(lotId);
@@ -78,14 +82,13 @@ namespace AuctionZ.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "admin,user")]
         public IActionResult EditLot(int lotId, LotViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                if (vm.ImageFile != null)
-                    vm.ImageUrl = SaveImage(vm.ImageFile, 
-                        HttpContext.RequestServices.GetRequiredService<IHostingEnvironment>()) ?? "no_image.jpg";
+                vm.ImageUrl = SaveImage(vm.ImageFile,
+                    HttpContext.RequestServices.GetRequiredService<IHostingEnvironment>());
                 var lot = vm.ToDto();
                 _lotsService.Update(lot);
                 return RedirectToAction(nameof(Details), new { lotId = lot.LotId}); 
@@ -112,24 +115,33 @@ namespace AuctionZ.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Authorize]
-        public IActionResult MakeBid(int lotId, decimal bidValue)
+        public async Task<IActionResult> MakeBid([FromBody]BidDto bid)
         {
-            var lot = _lotsService.GetItem(lotId);
+            var lot = _lotsService.GetItem(bid.LotId);
+            if (lot == null)
+                return BadRequest();
             var user = _usersServices.GetItem(UserId);
-            if (lot.Price > bidValue)
-                ModelState.AddModelError(nameof(bidValue), "Wrong range of value");
-
-            if (user.Money < bidValue)
-                ModelState.AddModelError(nameof(bidValue), "Not enough funds");
-
+            if (lot.Price >= bid.Price)
+                ModelState.AddModelError(nameof(bid.Price), "Bid must be greater than value price");
+            if (user.Money < bid.Price)
+                ModelState.AddModelError(nameof(bid.Price), "Not enough funds");
             if (ModelState.IsValid)
-                _usersServices.MakeBid(lot.LotId, UserId, bidValue);
-
-            return RedirectToAction(nameof(Details), new { lotId = lot.LotId });
+            {
+                _usersServices.MakeBid(lot.LotId, UserId, bid.Price);
+                var lastbid = _bidsService.GetLastBidForLot(bid.LotId);
+                var row_info = string.Format("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr", lastbid.User.UserName,
+                        lastbid.Price.ToString("C"), lastbid.DateOfBid.ToString("f"));
+                await _hubcontext.Clients.All.SendAsync("BidMade",
+                  lot.LotId, row_info, lastbid.Price.ToString("C"));
+                return Ok();
+                //return new ObjectResult(new {row = row_info});
+            }
+            return new BadRequestObjectResult(ModelState);
         }
-//
+
+
+        //
 //        [HttpPost("{id}")]
 //        [Authorize]
 //        public IActioResult MakeBid(int lotId, [FromBody]decimal bidValue)
