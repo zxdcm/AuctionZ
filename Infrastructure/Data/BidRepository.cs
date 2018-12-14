@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
@@ -18,6 +17,7 @@ namespace Infrastructure.Data
         {
             return _context.Bids //Todo change later
                 .Where(b => b.LotId == lotId)
+                .Include(x => x.User)
                 .OrderByDescending(x => x.Price)
                 .FirstOrDefault();
         }
