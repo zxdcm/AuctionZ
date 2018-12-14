@@ -31,7 +31,7 @@ namespace AuctionZ.Models
         [DataType(DataType.DateTime)]
         [Display(Name = "Expiration time")]
         [Required(ErrorMessage = "The field must be filled")]
-        public DateTime ExpirationTime { get; set; }
+        public DateTime ExpirationTime { get; set; } = DateTime.Now.AddDays(7);
 
         [Display(Name = "Category")]
         [Required(ErrorMessage = "The category is required!")]
