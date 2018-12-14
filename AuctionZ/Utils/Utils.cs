@@ -21,7 +21,7 @@ namespace AuctionZ.Utils
         public static string SaveImage(IFormFile image, IHostingEnvironment env)
         {
             if (image == null)
-                return null;
+                return "no_image.jpg";
             var fileName = GetUniqueName(image.FileName);
 
             var uploads = Path.Combine(env.WebRootPath, "images");
