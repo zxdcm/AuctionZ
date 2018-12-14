@@ -50,36 +50,8 @@
 //                .build();
 //
 //
-//            function MakeBid(lotId, bidValue) {
-//                $.ajax({
-//                    url: "/Auction/MakeBid/"+lotId,
-//                    contentType: "application/json",
-//                    method: "POST",
-//                    dataType: "json",
-//                    data: JSON.stringify(
-//                        {
-//                            LotId: lotId,
-//                            Price: bidValue
-//                        }),
-//                    success: function (bid) {
-//                        return;
-//                        $("#bidsTable tbody").prepend(bid['row']); 
-//                    },
-//                    error: function (xhr, ajaxOptions, thrownError) {
-//                        if (xhr.status === 400) {
-//                            let $summary = $(".validation-summary-valid").find('ul');
-//                            $summary.empty();
-//                            $.each(JSON.parse(xhr.responseText),
-//                                function (i, el) {
-//                                    $.each(el.toString().split(","),
-//                                        function (i, el) {
-//                                            $summary.append($("<li>").text(el));
-//                                        });
-//                                });
-//                        }
-//                    }
-//                });
-//            }
+
+        
 
 
 //            $("#makeBidForm").submit(function (e) {
@@ -131,21 +103,21 @@
         <div class="panel-heading">Bids</div>
         <table class="table" id="bidsTable">
             <thead>
-                <tr>
-                    <th>Buyer</th>
-                    <th>Bid value</th>
-                    <th>Date of bid</th>
-                </tr>
+            <tr>
+                <th>Buyer</th>
+                <th>Bid value</th>
+                <th>Date of bid</th>
+            </tr>
             </thead>
             <tbody>
-                @foreach (var bid in Model.Bids)
-                {
-                    <tr>
-                        <td>@bid.User.UserName</td>
-                        <td>@bid.Price</td>
-                        <td>@bid.DateOfBid.ToString("f")</td>
-                    </tr>
-                }
+            @foreach (var bid in Model.Bids)
+            {
+                <tr>
+                    <td>@bid.User.UserName</td>
+                    <td>@bid.Price</td>
+                    <td>@bid.DateOfBid.ToString("f")</td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>
@@ -162,14 +134,62 @@
     }
 </div>
 
+<div id="resultModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Lot results</h4>
+            </div>
+                <div class="modal-body">
+                    <label style="font-size: medium" id="LotResultText"></label> 
+                </div>
+                <div class="modal-footer">
+                    <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+        </div>
+    </div>
+</div>
+
 <script>
 
+ var x = function MakeBid(lotId, bidValue) {
+        $.ajax({
+            url: "/Auction/MakeBid/"+lotId,
+            contentType: "application/json",
+            method: "POST",
+            dataType: "json",
+            data: JSON.stringify(
+                {
+                    LotId: lotId,
+                    Price: bidValue
+                }),
+            success: function (bid) {
+                return;
+                $("#bidsTable tbody").prepend(bid['row']); 
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                if (xhr.status === 400) {
+                    let $summary = $(".validation-summary-valid").find('ul');
+                    $summary.empty();
+                    $.each(JSON.parse(xhr.responseText),
+                        function (i, el) {
+                            $.each(el.toString().split(","),
+                                function (i, el) {
+                                    $summary.append($("<li>").text(el));
+                                });
+                        });
+                }
+            }
+        });
+    }
 
     $("#makeBidForm").submit(function (e) {
         e.preventDefault();
         const lotId = this.elements["lotId"].value;
         const bidValue = this.elements["bidValue"].value;
-        AuctionConnection.invoke("MakeBid", @currentUserId, lotId, bidValue);
+        x(lotId, bidValue);
+        //AuctionConnection.invoke("MakeBid", @currentUserId, lotId, bidValue);
     });
 
     AuctionConnection.on('Error', function (responce) {
@@ -186,19 +206,22 @@
     });
 
 
-    AuctionConnection.on('BidMade',
+    AuctionConnection.on("BidMade",
         function (lotId, row, newPrice) {
-            if (lotId !== $("#lotId")) return;
+            var id = $("#lotId").val();
+            if (lotId != id) return;
             $("#bidsTable tbody").prepend(row);
             //Todo fix table + innerHtml
-            $("#currentPrice").innerHTML = newPrice;
+            document.getElementById("currentPrice").innerHTML = newPrice;
     });
 
     AuctionConnection.on("LotEnd",
         function (lotId, message) {
-            alert(lotId);
-            if (lotId !== $("$lotId")) return;
+            if (lotId != $("#lotId").val()) return;
             alert(message);
+            document.getElementById("LotResultText").innerText = message;
+            document.getElementById("closeButton").onclick = location.reload;
+            $('#resultModal').modal('show');
         });
 
 </script>
