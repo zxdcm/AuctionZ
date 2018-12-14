@@ -19,12 +19,12 @@ namespace AuctionZ
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging((hostingContext, logging)  => {
+                .ConfigureLogging((hostingContext, logging) => {
                     logging.AddConfiguration(
                         hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                     logging.AddDebug();
                 })
-                .UseStartup(nameof(AuctionZ)); 
+                .UseStartup(nameof(AuctionZ));
     }
 }

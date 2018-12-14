@@ -1,7 +1,10 @@
 ﻿@using ApplicationCore.Entities
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.AspNetCore.Routing
+@using Microsoft.Extensions.Localization
+@inject IViewLocalizer Localizer
 @model IEnumerable<LotViewModel>
 @{
     var controller = Context.GetRouteData().Values["controller"].ToString();
@@ -21,7 +24,7 @@
                 @Html.DisplayNameFor(model => model.ExpirationTime)
             </th>
             @if (expanded) { <th>Owner</th>}
-            <th>Actions</th>
+            <th>@Localizer["Actions"]</th>
         </tr>
     </thead>
     <tbody>
@@ -60,7 +63,7 @@
                     <form class="form-inline" style="float: left; margin-right: 2% " method="post" asp-controller="Auction" asp-action="DeleteLot"
                           asp-route-lotId="@item.LotId"
                           asp-antiforgery="true">
-                        <button type="submit" onclick="if (!confirm('Are you sure want to delete lot?')) return;"
+                        <button type="submit" onclick="if (!confirm('Are you sure want to delete lot?')) return false;"
                                class="btn btn-danger">Delete</button>
                     </form>
                 </td>
