@@ -22,6 +22,7 @@ namespace ApplicationCore.DTO
         public CategoryDto Category { get; set; }
 
         public List<BidDto> Bids { get; set; }
+        public bool IsFinished { get; set; }
 
     }
 }

@@ -12,10 +12,7 @@ namespace AuctionZ.Models.MappingProfiles
     {
         public ProfileViewModelMappingProfile()
         {
-            CreateMap<ProfileViewModel, UserDto>()
-                .ForMember(x => x.Money, opt => opt.Ignore());
-            CreateMap<ProfileViewModel, RegisterViewModel>()
-                .ForSourceMember(x => x.Money, opt => opt.Ignore());
+            CreateMap<ProfileViewModel, UserDto>().ReverseMap();
         }
 
     }

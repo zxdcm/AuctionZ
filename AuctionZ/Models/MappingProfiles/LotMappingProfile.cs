@@ -10,7 +10,8 @@ namespace AuctionZ.Models.MappingProfiles
             CreateMap<LotDto, LotViewModel>()
                 .ForMember(x => x.Categories, opt => opt.Ignore())
                 .ForMember(x => x.ImageFile, opt => opt.Ignore());
-            CreateMap<LotViewModel, LotDto>();
+            CreateMap<LotViewModel, LotDto>()
+                .ForMember(x => x.IsFinished, opt => opt.Ignore());
         }
     }
 }

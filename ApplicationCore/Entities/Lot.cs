@@ -21,5 +21,6 @@ namespace ApplicationCore.Entities
         public virtual Category Category { get; set; }
 
         public virtual ICollection<Bid> Bids { get; set; }
+        public bool IsFinished { get;set; }
     }
 }
