@@ -100,9 +100,8 @@ namespace AuctionZ.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (vm.ImageFile != null)
-                    vm.ImageUrl = SaveImage(vm.ImageFile,
-                                      HttpContext.RequestServices.GetRequiredService<IHostingEnvironment>()) ?? "no_image.jpg";;
+                vm.ImageUrl = SaveImage(vm.ImageFile,
+                                  HttpContext.RequestServices.GetRequiredService<IHostingEnvironment>());
                 var lot = _lotsService.AddItem(vm.ToDto());
                 return RedirectToAction(nameof(Lots), lot.LotId);
             }
