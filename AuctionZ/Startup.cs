@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Globalization;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
-using AuctionZ.Models.MappingProfiles;
+using AuctionZ.Utils;
 using AutoMapper;
 using Infrastructure.Data;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,8 +44,9 @@ namespace AuctionZ
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddViewLocalization();
 
             services.AddDbContext<AuctionContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
@@ -66,12 +65,14 @@ namespace AuctionZ
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<IEmailSender, EmailService>();
+            services.AddHostedService<AuctionHostedService>();
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AuctionContext>()
                 .AddDefaultTokenProviders();
-
-
+            
 
 //
 //            services.AddScoped(provider => 
@@ -89,14 +90,19 @@ namespace AuctionZ
             // Add memory cache services
             services.AddMemoryCache();
 
+            services.AddCors();
+            //Add SignalR
+           
+            services.AddSignalR();
         }
 
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDbInitializer initializer)
         {
+            app.UseCors(builder => builder.AllowAnyOrigin());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -108,9 +114,29 @@ namespace AuctionZ
             }
 
             app.UseHttpsRedirection();
+
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en"),
+                new CultureInfo("ru"),
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("ru"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+
+
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<LotHub>("/lotHub");
+            });
+            //initializer.Seed();
         }
     }
 }
