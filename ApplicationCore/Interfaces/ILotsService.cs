@@ -16,5 +16,7 @@ namespace ApplicationCore.Interfaces
         int GetLotsCount(LotsFilterCriteria criteria);
         IEnumerable<LotDto> GetAllLotsWithUsers(LotsFilterCriteria criteria);
         IEnumerable<LotDto> GetUserPurchases(int userId);
+        IEnumerable<LotDto> GetLotsByStatus(bool isFinished);
+
     }
 }

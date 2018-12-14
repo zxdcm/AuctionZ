@@ -93,5 +93,11 @@ namespace Infrastructure.Data
                            x.Bids.OrderByDescending(y => y.Price).FirstOrDefault().UserId == userId).Include(x => x.User);
         }
 
+        public IEnumerable<Lot> GetLotsByStatus(bool isFinished)
+        {
+            return _context.Lots.Where(x => x.IsFinished==isFinished);
+        }
+
+
     }
 }

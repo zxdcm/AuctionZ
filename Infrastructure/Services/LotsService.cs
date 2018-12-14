@@ -100,6 +100,10 @@ namespace Infrastructure.Services
             return _lotRepository.GetUserPurchases(userId).ToDto();
         }
 
+        public IEnumerable<LotDto> GetLotsByStatus(bool isFinished)
+        {
+            return _lotRepository.GetLotsByStatus(isFinished).ToDto();
+        }
     }
       
    
