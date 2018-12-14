@@ -28,8 +28,6 @@ namespace AuctionZ.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index => View("~/Auction/Index");
-
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register() => View();
@@ -40,9 +38,13 @@ namespace AuctionZ.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _userService.TryRegister(vm.ToDto(), vm.Password);
+                var userDto = vm.ToDto();
+                var result = await _userService.TryRegister(userDto, vm.Password);
                 if (result.Succeeded)
-                    return RedirectToAction(nameof(Index));
+                {
+                    return RedirectToAction(nameof(Login));
+                }
+
                 foreach (var error in result.Errors)
                     ModelState.AddModelError("", error.Description);
             }
@@ -69,9 +71,8 @@ namespace AuctionZ.Controllers
                     return Redirect(returnUrl ?? "/");
                 ModelState.AddModelError(nameof(LoginViewModel.Email),
                     "Invalid email or password");
-                return View();
             }
-            return RedirectToAction("Index", "Auction");
+            return View();
         }
 
         [Authorize]
