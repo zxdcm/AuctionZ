@@ -10,7 +10,7 @@ namespace ApplicationCore
         public string Title { get; set; }
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 4;
-        public bool? Active { get; set; } = null;
-        public int? UserId { get; set; } = null;
+        public bool? Active { get; set; }
+        public int? UserId { get; set; }
     }
 }
