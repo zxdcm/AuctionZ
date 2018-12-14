@@ -58,7 +58,7 @@ namespace AuctionZ
                     return;
                 foreach (var lot in lots)
                 {
-                    if (DateTime.Now < lot.ExpirationTime) // >
+                    if (DateTime.Now > lot.ExpirationTime) // >
                     {
                         lot.IsFinished = true;
                         lotService.Update(lot);
