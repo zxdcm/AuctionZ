@@ -67,8 +67,13 @@ namespace Infrastructure.Services
         }
 
 
-        public async Task<IdentityResult> TryRegister(UserDto user, string password) =>
-            await _userManager.CreateAsync(user.ToDal(), password);
+        public async Task<IdentityResult> TryRegister(UserDto user, string password)  {
+            var res = await _userManager.CreateAsync(user.ToDal(), password);
+            if (!res.Succeeded)
+                return res;
+            var orm = await _userManager.FindByEmailAsync(user.Email);
+            return await _userManager.AddToRoleAsync(orm, "user");
+        }
 
 
         public async Task<SignInResult> TryLogin(string email, string password)
